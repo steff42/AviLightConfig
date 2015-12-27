@@ -7,12 +7,12 @@ public class FocusAdapter implements FocusListener
 {
 
   @Override
-  public void focusGained(FocusEvent event)
+  public void focusGained( FocusEvent event )
   {
   }
 
   @Override
-  public void focusLost(FocusEvent event)
+  public void focusLost( FocusEvent event )
   {
   }
 

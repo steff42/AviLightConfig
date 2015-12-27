@@ -2,7 +2,7 @@ package de.prim.avilight.gui;
 
 import javax.swing.event.ListDataEvent;
 
-public class ReceiverInputsModel extends AviLightComboBoxModel
+public class ReceiverInputsModel extends AviLightComboBoxModel<String>
 {
 
   /** The inputs. */
@@ -10,11 +10,11 @@ public class ReceiverInputsModel extends AviLightComboBoxModel
 
   /**
    * Instantiates a new receiver inputs model.
-   * 
+   *
    * @param inputs
    *          the inputs
    */
-  public ReceiverInputsModel(int inputs)
+  public ReceiverInputsModel( int inputs )
   {
     super();
     this.inputs = inputs;
@@ -24,7 +24,7 @@ public class ReceiverInputsModel extends AviLightComboBoxModel
 
   /**
    * Gets the inputs.
-   * 
+   *
    * @return the inputs
    */
   public int getInputs()
@@ -34,27 +34,22 @@ public class ReceiverInputsModel extends AviLightComboBoxModel
 
   /**
    * Sets the inputs.
-   * 
+   *
    * @param inputs
    *          the new inputs
    */
-  public void setInputs(int inputs)
+  public void setInputs( int inputs )
   {
     this.inputs = inputs;
 
-    sendEvent( new ListDataEvent( this, ListDataEvent.CONTENTS_CHANGED, 0,
-        inputs ) );
+    sendEvent( new ListDataEvent( this, ListDataEvent.CONTENTS_CHANGED, 0, inputs ) );
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see javax.swing.ListModel#getElementAt(int)
-   */
+  /** {@inheritDoc} */
   @Override
-  public Object getElementAt(int idx)
+  public String getElementAt( int idx )
   {
-    if (idx == 0)
+    if ( idx == 0 )
     {
       return "Kein Eingang";
     }
@@ -64,24 +59,20 @@ public class ReceiverInputsModel extends AviLightComboBoxModel
     }
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see javax.swing.ListModel#getSize()
-   */
+  /** {@inheritDoc} */
   @Override
   public int getSize()
   {
     return inputs + 1;
   }
 
-  public Integer getValue(String text)
+  public Integer getValue( String text )
   {
-    if (text != null)
+    if ( text != null )
     {
-      for (int i = 0; i < getSize(); i++)
+      for ( int i = 0; i < getSize(); i++ )
       {
-        if (text.equals( getElementAt( i ) ))
+        if ( text.equals( getElementAt( i ) ) )
         {
           return i;
         }

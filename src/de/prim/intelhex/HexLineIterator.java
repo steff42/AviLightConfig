@@ -11,20 +11,20 @@ public class HexLineIterator implements Iterator<Byte>, Iterable<Byte>
   private String line;
 
   /** The pos. */
-  private int pos;
+  private int    pos;
 
   /** The sum over all bytes. */
-  private int sum;
+  private int    sum;
 
   /**
    * Instantiates a new hex line iterator.
-   * 
+   *
    * @param line
    *          the line
    * @param startPos
    *          the start pos
    */
-  public HexLineIterator(String line, int startPos)
+  public HexLineIterator( String line, int startPos )
   {
     super();
     sum = 0;
@@ -52,11 +52,11 @@ public class HexLineIterator implements Iterator<Byte>, Iterable<Byte>
   public Byte next()
   {
     byte value;
-    value = (byte) (HexUtils.parseHexChar( line.charAt( pos++ ) ) << 4);
+    value = (byte) ( HexUtils.parseHexChar( line.charAt( pos++ ) ) << 4 );
     value |= HexUtils.parseHexChar( line.charAt( pos++ ) );
 
     sum += 0xff & value;
-    
+
     return value;
   }
 
@@ -82,5 +82,4 @@ public class HexLineIterator implements Iterator<Byte>, Iterable<Byte>
     return sum;
   }
 
-  
 }

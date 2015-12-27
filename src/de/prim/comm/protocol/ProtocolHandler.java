@@ -4,5 +4,5 @@ import de.prim.comm.event.CommEvent;
 
 public interface ProtocolHandler
 {
-  CommEvent processData( byte [] data, int size );
+  CommEvent processData( byte[] data, int size );
 }

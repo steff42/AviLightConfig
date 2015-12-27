@@ -4,14 +4,15 @@ import de.prim.avilight.gui.MainWindow;
 
 public class Start
 {
-  public static void main(String[] args) throws Exception
+  public static void main( String[] args ) throws Exception
   {
     MainWindow mainWindow = new MainWindow();
-    mainWindow.setVisible(true);
+    mainWindow.setVisible( true );
 
-//    SerialPort serialPort = CommWrapper.openComPort("COM1", "AviLight", 2000);
-//    AviLightComm aviLightComm = new AviLightComm(serialPort, mainWindow
-//        .getTerminalListener());
+    // SerialPort serialPort = CommWrapper.openComPort("COM1", "AviLight",
+    // 2000);
+    // AviLightComm aviLightComm = new AviLightComm(serialPort, mainWindow
+    // .getTerminalListener());
 
   }
 }

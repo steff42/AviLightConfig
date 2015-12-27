@@ -8,9 +8,9 @@ public class ConfigChanged implements ProtocolHandler
 {
 
   @Override
-  public CommEvent processData(byte[] data, int size)
+  public CommEvent processData( byte[] data, int size )
   {
-    if (size != 1)
+    if ( size != 1 )
     {
       return new CommEventError( "To much data for Config changed", data, size );
     }

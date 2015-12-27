@@ -8,7 +8,7 @@ public class Receiver implements ProtocolHandler
 {
 
   @Override
-  public CommEvent processData(byte[] data, int size)
+  public CommEvent processData( byte[] data, int size )
   {
     if (size == 2 + 2 * data[1])
     {

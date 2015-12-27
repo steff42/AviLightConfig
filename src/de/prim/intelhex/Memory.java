@@ -3,11 +3,11 @@ package de.prim.intelhex;
 public class Memory
 {
   public static final int PAGESIZE = 128;
-  public static final int PAGES = 256; // ATMega328
+  public static final int PAGES    = 256;              // ATMega328
 
-  private byte[][] pages = new byte[PAGES][];
+  private byte[][]        pages    = new byte[PAGES][];
 
-  public void set(int address, byte value)
+  public void set( int address, byte value )
   {
     if (address > PAGES * PAGESIZE)
     {
@@ -19,9 +19,9 @@ public class Memory
     page[address % PAGESIZE] = value;
   }
 
-  public byte[] getPage(int pageNo)
+  public byte[] getPage( int pageNo )
   {
-    if (pageNo > PAGES)
+    if ( pageNo > PAGES )
     {
       throw new IllegalArgumentException( "Illegal Page No: " + pageNo );
     }
@@ -29,11 +29,11 @@ public class Memory
     return pages[pageNo];
   }
 
-  public byte[] getOrCreatePage(int pageNo)
+  public byte[] getOrCreatePage( int pageNo )
   {
     byte[] page = getPage( pageNo );
 
-    if (page == null)
+    if ( page == null )
     {
       page = new byte[PAGESIZE];
       pages[pageNo] = page;
@@ -44,9 +44,9 @@ public class Memory
 
   public int getMaxPage()
   {
-    for (int i = PAGES - 1; i > 0; i--)
+    for ( int i = PAGES - 1; i > 0; i-- )
     {
-      if (getPage( i ) != null)
+      if ( getPage( i ) != null )
       {
         return i;
       }

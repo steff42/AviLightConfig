@@ -7,7 +7,6 @@ import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.net.URL;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -19,6 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -39,25 +39,25 @@ public class MainWindow extends JFrame implements ActionListener
 {
 
   /** The Constant serialVersionUID. */
-  private static final long serialVersionUID = 2741538161387651064L;
+  private static final long  serialVersionUID = 2741538161387651064L;
 
   private TelegramSerialPort telegramSerialPort;
 
   /** The tab. */
-  private JTabbedPane tab;
+  private JTabbedPane        tab;
 
-  private AviLightPanel aviLightPanel;
+  private AviLightPanel      aviLightPanel;
 
   private AviLightConfigData aviLightConfigData;
 
-  private JPanel configuration;
+  private JPanel             configuration;
 
-  private Timer communicationTimer;
+  private Timer              communicationTimer;
 
-  private ProgressDialog progressDialog;
+  private ProgressDialog     progressDialog;
 
-  private JButton loadData;
-  private JButton saveData;
+  private JButton            loadData;
+  private JButton            saveData;
 
   public MainWindow()
   {
@@ -76,37 +76,21 @@ public class MainWindow extends JFrame implements ActionListener
 
     setJMenuBar( initMenu() );
 
-    JToolBar toolbar = new JToolBar( JToolBar.HORIZONTAL );
+    JToolBar toolbar = new JToolBar( SwingConstants.HORIZONTAL );
     container.add( toolbar, BorderLayout.PAGE_START );
 
     loadData = new JButton();
-    loadData.setIcon( new ImageIcon( MainWindow.class
-        .getResource( "/resources/load.gif" ) ) );
+    loadData.setIcon( new ImageIcon( MainWindow.class.getResource( "/resources/load.gif" ) ) );
     loadData.setToolTipText( "Programm verwerfen und vom Modul neu laden" );
     loadData.setEnabled( false );
-    loadData.addActionListener( new ActionListener()
-    {
-      @Override
-      public void actionPerformed(ActionEvent e)
-      {
-        aviLightConfigData.reloadConfig();
-      }
-    } );
+    loadData.addActionListener( ActionEvent -> aviLightConfigData.reloadConfig() );
     toolbar.add( loadData );
 
     saveData = new JButton();
-    saveData.setIcon( new ImageIcon( MainWindow.class
-        .getResource( "/resources/save.gif" ) ) );
+    saveData.setIcon( new ImageIcon( MainWindow.class.getResource( "/resources/save.gif" ) ) );
     saveData.setToolTipText( "Programm auf dem Modul speichern" );
     saveData.setEnabled( false );
-    saveData.addActionListener( new ActionListener()
-    {
-      @Override
-      public void actionPerformed(ActionEvent e)
-      {
-        aviLightConfigData.saveConfig();
-      }
-    } );
+    saveData.addActionListener( ActionEvent -> aviLightConfigData.saveConfig() );
     toolbar.add( saveData );
 
     tab = new JTabbedPane();
@@ -115,16 +99,15 @@ public class MainWindow extends JFrame implements ActionListener
 
     tab.addTab( "Info", new InfoPanel( this, aviLightConfigData ) );
 
-    tab.addTab( "Empfänger", new ReceiverPanel( aviLightConfigData ) );
+    tab.addTab( "EmpfÃ¤nger", new ReceiverPanel( aviLightConfigData ) );
 
-    // tab.addTab( "PWM Ausgänge", new OutputsPanel( this, aviLightConfigData,
+    // tab.addTab( "PWM AusgÃ¤nge", new OutputsPanel( this, aviLightConfigData,
     // OutputType.PWM ) );
 
-    tab.addTab( "Schaltausgänge", new OutputsPanel( this, aviLightConfigData,
-        OutputType.Switch ) );
+    tab.addTab( "SchaltausgÃ¤nge", new OutputsPanel( this, aviLightConfigData, OutputType.Switch ) );
 
-//     TerminalPanel terminalPanel = new TerminalPanel( aviLightConfigData );
-//     tab.addTab( "Terminal", terminalPanel );
+    // TerminalPanel terminalPanel = new TerminalPanel( aviLightConfigData );
+    // tab.addTab( "Terminal", terminalPanel );
 
     tab.setSelectedIndex( 0 );
     Dimension size = new Dimension( 800, 300 );
@@ -134,15 +117,11 @@ public class MainWindow extends JFrame implements ActionListener
     pack();
     setLocationRelativeTo( null );
 
-    communicationTimer = new Timer( 250, new ActionListener()
+    communicationTimer = new Timer( 250, actionEvent ->
     {
-      @Override
-      public void actionPerformed(ActionEvent actionEvent)
+      if ( !aviLightConfigData.cyclicCommunication() )
       {
-        if (!aviLightConfigData.cyclicCommunication())
-        {
-          disconnected();
-        }
+        disconnected();
       }
     } );
   }
@@ -170,24 +149,10 @@ public class MainWindow extends JFrame implements ActionListener
 
     JMenuItem load = new JMenuItem( "Laden" );
     // aviLight.add( load );
-    load.addActionListener( new ActionListener()
-    {
-      @Override
-      public void actionPerformed(ActionEvent actionEvent)
-      {
-        load();
-      }
-    } );
+    load.addActionListener( ActionEvent -> load() );
 
     JMenuItem save = new JMenuItem( "Speichern" );
-    save.addActionListener( new ActionListener()
-    {
-      @Override
-      public void actionPerformed(ActionEvent actionEvent)
-      {
-        save();
-      }
-    } );
+    save.addActionListener( ActionEvent -> save() );
     // aviLight.add( save );
 
     return menuBar;
@@ -202,27 +167,24 @@ public class MainWindow extends JFrame implements ActionListener
     String directory = fileDialog.getDirectory();
     String file = fileDialog.getFile();
 
-    if (directory != null && file != null)
+    if ( directory != null && file != null )
     {
       try
       {
         File loadFile = new File( directory, file );
 
-        JAXBContext jaxbContext = JAXBContext
-            .newInstance( AviLightConfigData.class );
+        JAXBContext jaxbContext = JAXBContext.newInstance( AviLightConfigData.class );
 
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
-        AviLightConfigData data = (AviLightConfigData) unmarshaller
-            .unmarshal( loadFile );
+        AviLightConfigData data = (AviLightConfigData) unmarshaller.unmarshal( loadFile );
 
         System.out.println( data );
       }
 
-      catch (Exception e)
+      catch ( Exception e )
       {
-        JOptionPane.showMessageDialog( this, e.getMessage(), "Fehler",
-            JOptionPane.ERROR_MESSAGE );
+        JOptionPane.showMessageDialog( this, e.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE );
 
         e.printStackTrace();
       }
@@ -238,23 +200,21 @@ public class MainWindow extends JFrame implements ActionListener
     String directory = fileDialog.getDirectory();
     String file = fileDialog.getFile();
 
-    if (directory != null && file != null)
+    if ( directory != null && file != null )
     {
       try
       {
         File saveFile = new File( directory, file );
 
-        JAXBContext jaxbContext = JAXBContext
-            .newInstance( AviLightConfigData.class );
+        JAXBContext jaxbContext = JAXBContext.newInstance( AviLightConfigData.class );
 
         Marshaller marshaller = jaxbContext.createMarshaller();
 
         marshaller.marshal( aviLightConfigData, saveFile );
       }
-      catch (Exception e)
+      catch ( Exception e )
       {
-        JOptionPane.showMessageDialog( this, e.getMessage(), "Fehler",
-            JOptionPane.ERROR_MESSAGE );
+        JOptionPane.showMessageDialog( this, e.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE );
 
         e.printStackTrace();
       }
@@ -263,9 +223,9 @@ public class MainWindow extends JFrame implements ActionListener
   }
 
   @Override
-  public void actionPerformed(ActionEvent event)
+  public void actionPerformed( ActionEvent event )
   {
-    if (event.getActionCommand().equals( ConnectPanel.COMMAND_CONNECT ))
+    if ( event.getActionCommand().equals( ConnectPanel.COMMAND_CONNECT ) )
     {
       ProtocolTester protocolTester = (ProtocolTester) event.getSource();
 
@@ -273,17 +233,14 @@ public class MainWindow extends JFrame implements ActionListener
       {
         telegramSerialPort = protocolTester.dispose();
 
-        TelegramEscapeByteProcessor sender = new TelegramEscapeByteProcessor(
-            telegramSerialPort );
+        TelegramEscapeByteProcessor sender = new TelegramEscapeByteProcessor( telegramSerialPort );
 
         aviLightConfigData.setSender( sender );
 
-        AviLightProtocol aviLightProtocol = new AviLightProtocol(
-            aviLightConfigData );
+        AviLightProtocol aviLightProtocol = new AviLightProtocol( aviLightConfigData );
 
-        telegramSerialPort
-            .setTelegramSeparator( new TelegramSeparationProcessor(
-                aviLightProtocol, Constants.BUFFER_SIZE ) );
+        telegramSerialPort.setTelegramSeparator( new TelegramSeparationProcessor( aviLightProtocol,
+            Constants.BUFFER_SIZE ) );
 
         loadData.setEnabled( true );
         saveData.setEnabled( true );
@@ -291,41 +248,37 @@ public class MainWindow extends JFrame implements ActionListener
         aviLightConfigData.init();
         communicationTimer.start();
       }
-      catch (Exception e)
+      catch ( Exception e )
       {
         e.printStackTrace();
 
-        JOptionPane.showMessageDialog( this, e.getMessage() == null ? e
-            .getClass().getName() : e.getMessage(), "Fehler",
+        JOptionPane.showMessageDialog( this,
+            e.getMessage() == null ? e.getClass().getName() : e.getMessage(), "Fehler",
             JOptionPane.ERROR_MESSAGE );
       }
     }
-    else if (AviLightConfigData.ACTION_ASK_UPGRADE.equals( event
-        .getActionCommand() ))
+    else if ( AviLightConfigData.ACTION_ASK_UPGRADE.equals( event.getActionCommand() ) )
     {
       // No App found, only Bootloader, ask for firmware upgrade.
       askForFirmwareUpgrade();
 
     }
-    else if (AviLightConfigData.ACTION_START_PROGRESS.equals( event
-        .getActionCommand() ))
+    else if ( AviLightConfigData.ACTION_START_PROGRESS.equals( event.getActionCommand() ) )
     {
-      progressDialog = ProgressDialog.openNonModal( this,
-          (String) event.getSource(), event.getID() );
+      progressDialog = ProgressDialog
+          .openNonModal( this, (String) event.getSource(), event.getID() );
     }
-    else if (AviLightConfigData.ACTION_STOP_PROGRESS.equals( event
-        .getActionCommand() ))
+    else if ( AviLightConfigData.ACTION_STOP_PROGRESS.equals( event.getActionCommand() ) )
     {
-      if (progressDialog != null)
+      if ( progressDialog != null )
       {
         progressDialog.setVisible( false );
         progressDialog = null;
       }
     }
-    else if (AviLightConfigData.ACTION_PROGRESS.equals( event
-        .getActionCommand() ))
+    else if ( AviLightConfigData.ACTION_PROGRESS.equals( event.getActionCommand() ) )
     {
-      if (progressDialog != null)
+      if ( progressDialog != null )
       {
         progressDialog.setValue( event.getID() );
       }
@@ -334,13 +287,11 @@ public class MainWindow extends JFrame implements ActionListener
 
   private void askForFirmwareUpgrade()
   {
-    int confirm = JOptionPane
-        .showConfirmDialog(
-            this,
-            "Keine Firmware geladen auf dem Modul installiert. Soll ein Formwareupgrade durchgeführt werden ?",
-            "Warnung", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE );
+    int confirm = JOptionPane.showConfirmDialog( this,
+        "Keine Firmware auf dem Modul installiert. Soll ein Firmwareupgrade durchgefÃ¼hrt werden ?",
+        "Warnung", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE );
 
-    if (JOptionPane.YES_OPTION == confirm)
+    if ( JOptionPane.YES_OPTION == confirm )
     {
       aviLightConfigData.firmwareUpgrade();
     }

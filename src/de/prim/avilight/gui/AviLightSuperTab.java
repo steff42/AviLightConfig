@@ -13,18 +13,17 @@ public abstract class AviLightSuperTab extends JPanel
 {
 
   /** The Constant serialVersionUID. */
-  private static final long serialVersionUID = 4196891864314185485L;
+  private static final long    serialVersionUID = 4196891864314185485L;
 
   protected AviLightConfigData aviLightConfigData;
 
   /**
    * Instantiates a new avi light panel.
-   * 
+   *
    * @param layoutManager
    *          the layout manager
    */
-  public AviLightSuperTab(AviLightConfigData aviLightConfigData,
-      LayoutManager layoutManager)
+  public AviLightSuperTab( AviLightConfigData aviLightConfigData, LayoutManager layoutManager )
   {
     super( layoutManager );
 

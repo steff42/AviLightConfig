@@ -2,8 +2,6 @@ package de.prim.avilight.gui;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.NumberFormat;
 
 import javax.swing.JCheckBox;
@@ -11,6 +9,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
+import javax.swing.SwingConstants;
 
 import de.prim.avilight.Constants;
 import de.prim.avilight.gui.dlg.ReceiverChannelComboModel;
@@ -20,12 +19,11 @@ import de.prim.comm.data.DataEvent;
 import de.prim.comm.data.DataEventListener;
 import de.prim.comm.event.CommEventReceiver.ReceiverChannel;
 
-public class ReceiverPanel extends AviLightSuperTab implements
-    DataEventListener
+public class ReceiverPanel extends AviLightSuperTab implements DataEventListener
 {
 
   /** The Constant serialVersionUID. */
-  private static final long serialVersionUID = 6430359563544614699L;
+  private static final long         serialVersionUID = 6430359563544614699L;
 
   private static final NumberFormat VALUE_FORMAT;
   static
@@ -35,13 +33,13 @@ public class ReceiverPanel extends AviLightSuperTab implements
     VALUE_FORMAT.setMinimumFractionDigits( 1 );
   }
 
-  private JLabel channelValue[];
-  private JLabel channelSegment[];
-  private JComboBox<Object>[] channelConfig;
-  private JCheckBox[] channelLearn;
+  private JLabel                    channelValue[];
+  private JLabel                    channelSegment[];
+  private JComboBox<String>[]       channelConfig;
+  private JCheckBox[]               channelLearn;
 
-  @SuppressWarnings("unchecked")
-  public ReceiverPanel(final AviLightConfigData aviLightConfigData)
+  @SuppressWarnings ( "unchecked")
+  public ReceiverPanel( final AviLightConfigData aviLightConfigData )
   {
     super( aviLightConfigData, new GridLayout( 1, 0, 10, 10 ) );
 
@@ -54,71 +52,60 @@ public class ReceiverPanel extends AviLightSuperTab implements
     add( panel );
 
     panel.add( new JLabel( "Kanal" ) );
-    panel.add( new JLabel( "Knüppelstellung" ) );
+    panel.add( new JLabel( "KnÃ¼ppelstellung" ) );
     panel.add( new JLabel( "Segment" ) );
     panel.add( new JLabel( "Konfiguration" ) );
-    panel.add( new JLabel( "Knüppelwege lernen" ) );
+    panel.add( new JLabel( "KnÃ¼ppelwege lernen" ) );
 
     Dimension minWidth = new Dimension( 50, 10 );
-    for (int i = 0; i < Constants.MAX_RECEIVER_CHANNELS; i++)
+    for ( int i = 0; i < Constants.MAX_RECEIVER_CHANNELS; i++ )
     {
-      JLabel label = new JLabel( "Kanal " + (i + 1) );
+      JLabel label = new JLabel( "Kanal " + ( i + 1 ) );
       panel.add( label );
 
       channelValue[i] = new JLabel( "--" );
       channelValue[i].setMinimumSize( minWidth );
       channelValue[i].setPreferredSize( minWidth );
-      channelValue[i].setHorizontalAlignment( JLabel.RIGHT );
+      channelValue[i].setHorizontalAlignment( SwingConstants.RIGHT );
 
       panel.add( channelValue[i] );
 
       channelSegment[i] = new JLabel( "--" );
-      channelSegment[i].setHorizontalAlignment( JLabel.RIGHT );
+      channelSegment[i].setHorizontalAlignment( SwingConstants.RIGHT );
       panel.add( channelSegment[i] );
 
-      channelConfig[i] = new JComboBox<Object>( new ReceiverChannelComboModel() );
+      channelConfig[i] = new JComboBox<String>( new ReceiverChannelComboModel() );
       channelConfig[i].setActionCommand( String.valueOf( i ) );
       channelConfig[i].setMaximumSize( new Dimension( 50, 15 ) );
       panel.add( channelConfig[i] );
 
-      channelConfig[i].addActionListener( new ActionListener()
+      channelConfig[i].addActionListener( e ->
       {
-        @Override
-        public void actionPerformed(ActionEvent e)
-        {
-          int selection = ((JComboBox<Object>) e.getSource())
-              .getSelectedIndex();
+        int selection = ( (JComboBox<Object>) e.getSource() ).getSelectedIndex();
 
-          aviLightConfigData.setReceiverChannelMode(
-              Integer.parseInt( e.getActionCommand() ), selection );
-        }
+        aviLightConfigData.setReceiverChannelMode( Integer.parseInt( e.getActionCommand() ),
+            selection );
       } );
 
       channelLearn[i] = new JCheckBox();
       channelLearn[i].setActionCommand( String.valueOf( i ) );
       panel.add( channelLearn[i] );
-      channelLearn[i].addActionListener( new ActionListener()
+      channelLearn[i].addActionListener( e ->
       {
-
-        @Override
-        public void actionPerformed(ActionEvent e)
+        byte learn = 0;
+        for ( int i1 = 0; i1 < Constants.MAX_RECEIVER_CHANNELS; i1++ )
         {
-          byte learn = 0;
-          for (int i = 0; i < Constants.MAX_RECEIVER_CHANNELS; i++)
+          if ( channelLearn[i1].isSelected() )
           {
-            if (channelLearn[i].isSelected())
-            {
-              learn |= (1 << i);
-            }
+            learn |= ( 1 << i1 );
           }
-
-          aviLightConfigData.setStickLearnMode( learn );
         }
+
+        aviLightConfigData.setStickLearnMode( learn );
       } );
     }
 
-    SpringUtilities.makeCompactGrid( panel,
-        1 + Constants.MAX_RECEIVER_CHANNELS, 5, 6, 6, 6, 6 );
+    SpringUtilities.makeCompactGrid( panel, 1 + Constants.MAX_RECEIVER_CHANNELS, 5, 6, 6, 6, 6 );
 
     aviLightConfigData.addDataEventListener( this );
   }
@@ -167,61 +154,62 @@ public class ReceiverPanel extends AviLightSuperTab implements
   // }
 
   @Override
-  public void dataEvent(DataEvent dataEvent)
+  public void dataEvent( DataEvent dataEvent )
   {
-    switch (dataEvent.getType())
+    switch ( dataEvent.getType() )
     {
-    case ReceiverDataReceived:
-      ReceiverChannel[] channel = aviLightConfigData.getReceiverChannelData();
+      case ReceiverDataReceived:
+        ReceiverChannel[] channel = aviLightConfigData.getReceiverChannelData();
 
-      if (channel != null)
-      {
-        for (int i = 0; i < channel.length; i++)
+        if ( channel != null )
         {
-          if (channel[i].isValid())
+          for ( int i = 0; i < channel.length; i++ )
           {
-            channelValue[i]
-                .setText( VALUE_FORMAT.format( channel[i].getValue() * 100.0 / 255 )
-                    + " %" );
+            if ( channel[i].isValid() )
+            {
+              channelValue[i]
+                  .setText( VALUE_FORMAT.format( ( channel[i].getValue() * 100.0 ) / 255 ) + " %" );
 
-            channelSegment[i].setText( String.valueOf( 1 + channel[i]
-                .getSegment() ) );
+              channelSegment[i].setText( String.valueOf( 1 + channel[i].getSegment() ) );
+            }
+            else
+            {
+              channelValue[i].setText( "--" );
+              channelSegment[i].setText( "--" );
+            }
           }
-          else
+        }
+        break;
+
+      case InfoDataReceived:
+        byte[] receiverChannelModes = aviLightConfigData.getReceiverChannelModes();
+        if ( receiverChannelModes != null )
+        {
+          for ( int i = 0; i < receiverChannelModes.length; i++ )
           {
-            channelValue[i].setText( "--" );
-            channelSegment[i].setText( "--" );
+            channelConfig[i].setSelectedIndex( receiverChannelModes[i] );
+            channelConfig[i].repaint();
+
+            // System.out.println( "RCM " + i + ": " + receiverChannelModes[i]
+            // );
           }
         }
-      }
-      break;
+        break;
 
-    case InfoDataReceived:
-      byte[] receiverChannelModes = aviLightConfigData
-          .getReceiverChannelModes();
-      if (receiverChannelModes != null)
-      {
-        for (int i = 0; i < receiverChannelModes.length; i++)
+      case LearnStickModeReceived:
+        byte learn = aviLightConfigData.getLearnStickMode();
+        for ( int i = 0; i < Constants.MAX_RECEIVER_CHANNELS; i++ )
         {
-          channelConfig[i].setSelectedIndex( receiverChannelModes[i] );
-          channelConfig[i].repaint();
-
-          // System.out.println( "RCM " + i + ": " + receiverChannelModes[i] );
+          boolean learnOn = ( learn & ( 1 << i ) ) != 0;
+          if ( learnOn != channelLearn[i].isSelected() )
+          {
+            channelLearn[i].setSelected( learnOn );
+          }
         }
-      }
-      break;
-
-    case LearnStickModeReceived:
-      byte learn = aviLightConfigData.getLearnStickMode();
-      for (int i = 0; i < Constants.MAX_RECEIVER_CHANNELS; i++)
-      {
-        boolean learnOn = (learn & (1 << i)) != 0;
-        if (learnOn != channelLearn[i].isSelected())
-        {
-          channelLearn[i].setSelected( learnOn );
-        }
-      }
-      break;
+        break;
+      default:
+        // Do nothing
+        break;
     }
   }
 }

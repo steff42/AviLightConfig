@@ -4,7 +4,7 @@ public abstract class CommEvent
 {
   private byte source;
 
-  public CommEvent(byte source)
+  public CommEvent( byte source )
   {
     super();
     this.source = source;

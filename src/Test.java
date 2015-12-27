@@ -8,8 +8,8 @@ public class Test
   /**
    * @param args
    */
-  @SuppressWarnings("unchecked")
-  public static void main(String[] args) throws Exception
+  // @SuppressWarnings ( "unchecked")
+  public static void main( String[] args ) throws Exception
   {
     // Method m = CommPortIdentifier.class.getDeclaredMethod("loadDriver",
     // new Class<?>[] { String.class });
@@ -17,10 +17,10 @@ public class Test
     // m
     // .invoke(
     // null,
-    // "C:\\Dokumente und Einstellungen\\Jörg\\workspace.jee\\AviationLightConfig\\lib\\javax.comm.properties");
+    // "C:\\Dokumente und Einstellungen\\JÃ¶rg\\workspace.jee\\AviationLightConfig\\lib\\javax.comm.properties");
     // System.loadLibrary("win32com");
     // C:\\Dokumente und
-    // Einstellungen\\Jörg\\workspace.jee\\AviationLightConfig\\lib\\
+    // Einstellungen\\JÃ¶rg\\workspace.jee\\AviationLightConfig\\lib\\
 
     // Enumeration<CommPortIdentifier> enumerator = CommPortIdentifier
     // .getPortIdentifiers();
@@ -45,6 +45,6 @@ public class Test
     // }
 
     List<String> comPorts = CommWrapper.listComPorts();
-    System.out.println(comPorts);
+    System.out.println( comPorts );
   }
 }

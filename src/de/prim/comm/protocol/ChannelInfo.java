@@ -13,16 +13,15 @@ public class ChannelInfo implements ProtocolHandler
    * @see de.prim.comm.protocol.ProtocolHandler#processData(byte[], int)
    */
   @Override
-  public CommEvent processData(byte[] data, int size)
+  public CommEvent processData( byte[] data, int size )
   {
-    if (size >= 4)
+    if ( size >= 4 )
     {
       return new CommEventChannelInfo( data, size );
     }
     else
     {
-      return new CommEventError( "to less data for ChannelInfo: " + size, data,
-          size );
+      return new CommEventError( "to less data for ChannelInfo: " + size, data, size );
     }
   }
 

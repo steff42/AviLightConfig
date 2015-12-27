@@ -3,7 +3,7 @@ package de.prim.comm.event;
 public class CommEventWriteEeprom extends CommEvent
 {
 
-  public CommEventWriteEeprom(byte source)
+  public CommEventWriteEeprom( byte source )
   {
     super( source );
   }

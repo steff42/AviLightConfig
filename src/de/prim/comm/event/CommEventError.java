@@ -6,15 +6,15 @@ public class CommEventError extends CommEvent
 {
   private String message;
 
-  public CommEventError(String message, byte[] buffer, int length)
+  public CommEventError( String message, byte[] buffer, int length )
   {
     super( (byte) 0xff );
 
     this.message = message;
-    if (length > 0)
+    if ( length > 0 )
     {
       this.message += HexUtils.toHex( buffer, length );
-      if (buffer != null)
+      if ( buffer != null )
       {
         this.message += "\"";
         this.message += new String( buffer, 0, length );

@@ -15,31 +15,31 @@ public class CommEventChannelInfo extends CommEvent
   /** The receiver channels. */
   private byte receiverChannels;
 
-  /** The max # of segments */
-  private byte maxSegments;
+  // /** The max # of segments */
+  // private byte maxSegments;
 
   /**
    * Instantiates a new comm event channel info.
-   * 
+   *
    * @param buffer
    *          the buffer
    * @param size
    */
-  public CommEventChannelInfo(byte buffer[], int size)
+  public CommEventChannelInfo( byte buffer[], int size )
   {
     super( buffer[0] );
 
     outputChannels = buffer[1];
     switchChannels = buffer[2];
     receiverChannels = buffer[3];
-    if (size > 4)
-    {
-      maxSegments = buffer[4];
-    }
-    else
-    {
-      maxSegments = 6;
-    }
+    // if ( size > 4 )
+    // {
+    // maxSegments = buffer[4];
+    // }
+    // else
+    // {
+    // maxSegments = 6;
+    // }
   }
 
   public byte getOutputChannels()
@@ -60,9 +60,8 @@ public class CommEventChannelInfo extends CommEvent
   @Override
   public String toString()
   {
-    return "CommEventChannelInfo [outputChannels=" + outputChannels
-        + ", switchChannels=" + switchChannels + ", receiverChannels="
-        + receiverChannels + "]";
+    return "CommEventChannelInfo [outputChannels=" + outputChannels + ", switchChannels="
+        + switchChannels + ", receiverChannels=" + receiverChannels + "]";
   }
 
 }

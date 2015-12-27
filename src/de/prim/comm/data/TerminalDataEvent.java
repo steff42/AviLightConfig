@@ -4,7 +4,7 @@ public class TerminalDataEvent extends DataEvent
 {
   private String text;
 
-  public TerminalDataEvent(String text)
+  public TerminalDataEvent( String text )
   {
     super( DataEvent.Type.TerminalEvent );
 

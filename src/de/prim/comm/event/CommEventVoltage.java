@@ -1,5 +1,9 @@
 package de.prim.comm.event;
 
+import java.math.BigDecimal;
+
+import de.prim.avilight.Constants;
+
 public class CommEventVoltage extends CommEvent
 {
 
@@ -11,25 +15,25 @@ public class CommEventVoltage extends CommEvent
 
   /**
    * Instantiates a new comm event voltage.
-   * 
+   *
    * @param buffer
    *          the buffer
    * @param size
    */
-  public CommEventVoltage(byte[] buffer, int size)
+  public CommEventVoltage( byte[] buffer, int size )
   {
     super( buffer[0] );
 
-    voltage = (0xff & buffer[1]) | ((0xff & buffer[2]) << 8);
-    if (size > 3)
+    voltage = ( 0xff & buffer[1] ) | ( ( 0xff & buffer[2] ) << 8 );
+    if ( size > 3 )
     {
-      limit = (0xff & buffer[3]) | ((0xff & buffer[4]) << 8);
+      limit = ( 0xff & buffer[3] ) | ( ( 0xff & buffer[4] ) << 8 );
     }
   }
 
   /**
    * Gets the adc value.
-   * 
+   *
    * @return the adc value
    */
   public int getAdcValue()
@@ -39,17 +43,17 @@ public class CommEventVoltage extends CommEvent
 
   /**
    * Gets the voltage.
-   * 
+   *
    * @return the voltage
    */
-  public double getVoltage()
+  public BigDecimal getVoltage()
   {
-    return voltage / 36.0;
+    return new BigDecimal( voltage ).divide( new BigDecimal( "36" ),
+        Constants.ROUND_HALF_UP_PRE_2 );
   }
 
-  public double getLimit()
+  public BigDecimal getLimit()
   {
-    return limit / 36.0;
+    return new BigDecimal( limit ).divide( new BigDecimal( "36" ), Constants.ROUND_HALF_UP_PRE_2 );
   }
-
 }

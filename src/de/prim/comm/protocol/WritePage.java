@@ -8,9 +8,9 @@ public class WritePage implements ProtocolHandler
 {
 
   @Override
-  public CommEvent processData(byte[] data, int size)
+  public CommEvent processData( byte[] data, int size )
   {
-    if (size >= 4)
+    if ( size >= 4 )
     {
       return new CommEventMemoryWritten( data );
     }

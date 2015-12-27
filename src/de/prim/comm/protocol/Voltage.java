@@ -8,7 +8,7 @@ public class Voltage implements ProtocolHandler
 {
 
   @Override
-  public CommEvent processData(byte[] data, int size)
+  public CommEvent processData( byte[] data, int size )
   {
     if (size == 3 || size == 5)
     {

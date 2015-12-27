@@ -14,22 +14,22 @@ import javax.swing.table.TableCellEditor;
 import de.prim.comm.data.AviLightConfigData;
 import de.prim.comm.event.ProgramDefinition;
 
-public class OutputConfigEditor extends AbstractCellEditor implements
-    TableCellEditor, ActionListener
+public class OutputConfigEditor extends AbstractCellEditor implements TableCellEditor,
+    ActionListener
 {
 
   /** The Constant serialVersionUID. */
-  private static final long serialVersionUID = -4591009236613167676L;
+  private static final long     serialVersionUID = -4591009236613167676L;
 
-  private AviLightConfigData aviLightConfigData;
-  private ProgramDefinition data;
+  private AviLightConfigData    aviLightConfigData;
+  private ProgramDefinition     data;
 
-  private JButton button;
-  private JDialog dialog;
-  private Frame frame;
-  protected static final String EDIT = "edit";
+  private JButton               button;
+  private JDialog               dialog;
+  private Frame                 frame;
+  protected static final String EDIT             = "edit";
 
-  public OutputConfigEditor(Frame frame, AviLightConfigData aviLightConfigData)
+  public OutputConfigEditor( Frame frame, AviLightConfigData aviLightConfigData )
   {
     super();
     this.frame = frame;
@@ -41,9 +41,10 @@ public class OutputConfigEditor extends AbstractCellEditor implements
     button.setBorderPainted( false );
   }
 
-  public void actionPerformed(ActionEvent e)
+  @Override
+  public void actionPerformed( ActionEvent e )
   {
-    if (EDIT.equals( e.getActionCommand() ))
+    if ( EDIT.equals( e.getActionCommand() ) )
     {
       dialog = new OutputConfigDialog( frame, aviLightConfigData, data );
       dialog.setVisible( true );
@@ -53,14 +54,16 @@ public class OutputConfigEditor extends AbstractCellEditor implements
   }
 
   // Implement the one CellEditor method that AbstractCellEditor doesn't.
+  @Override
   public Object getCellEditorValue()
   {
     return data;
   }
 
   // Implement the one method defined by TableCellEditor.
-  public Component getTableCellEditorComponent(JTable table, Object value,
-      boolean isSelected, int row, int column)
+  @Override
+  public Component getTableCellEditorComponent( JTable table, Object value, boolean isSelected,
+      int row, int column )
   {
     data = (ProgramDefinition) value;
 
