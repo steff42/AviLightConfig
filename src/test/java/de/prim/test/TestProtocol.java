@@ -1,7 +1,6 @@
 package de.prim.test;
 
-import junit.framework.Assert;
-
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import de.prim.comm.event.CommEvent;
