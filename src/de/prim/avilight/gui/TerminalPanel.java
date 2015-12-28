@@ -3,8 +3,6 @@ package de.prim.avilight.gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -15,7 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import de.prim.comm.Command.Command;
+import de.prim.comm.command.Command;
 import de.prim.comm.data.AviLightConfigData;
 import de.prim.comm.data.DataEvent;
 import de.prim.comm.data.DataEvent.Type;
@@ -27,20 +25,21 @@ public class TerminalPanel extends JPanel implements DataEventListener
 {
 
   /** The Constant serialVersionUID. */
-  private static final long serialVersionUID = -1739609020272548213L;
+  private static final long      serialVersionUID = -1739609020272548213L;
 
-  private JScrollPane scrollPane;
-  private JTextArea textArea;
+  private JScrollPane            scrollPane;
+  private JTextArea              textArea;
 
-  private AviLightConfigData aviLightConfigData;
+  private AviLightConfigData     aviLightConfigData;
 
-  private static final String[] DEBUG_COMBO = { "Dump Channels",
-      "Dump Globals", "Dump Receiver", "Dump EEPROM", "Dump Program Array" };
-  private static final Command[] DEBUG_COMMAND = { Command.DUMP_CHANNELS,
-      Command.DUMP_GLOBALS, Command.DUMP_RECEIVER, Command.DUMP_EEPROM,
-      Command.DUMP_PROGRAM_ARRAY };
+  private static final String[]  DEBUG_COMBO      =
+                                                  { "Dump Channels", "Dump Globals",
+      "Dump Receiver", "Dump EEPROM", "Dump Program Array" };
+  private static final Command[] DEBUG_COMMAND    =
+                                                  { Command.DUMP_CHANNELS, Command.DUMP_GLOBALS,
+      Command.DUMP_RECEIVER, Command.DUMP_EEPROM, Command.DUMP_PROGRAM_ARRAY };
 
-  public TerminalPanel(AviLightConfigData aviLightConfigData)
+  public TerminalPanel( AviLightConfigData aviLightConfigData )
   {
     this.aviLightConfigData = aviLightConfigData;
     this.aviLightConfigData.addDataEventListener( this );
@@ -55,15 +54,8 @@ public class TerminalPanel extends JPanel implements DataEventListener
 
     this.setLayout( new BorderLayout() );
 
-    JButton button = new JButton( "Termnal Löschen" );
-    button.addActionListener( new ActionListener()
-    {
-      @Override
-      public void actionPerformed(ActionEvent event)
-      {
-        textArea.setText( "" );
-      }
-    } );
+    JButton button = new JButton( "Termnal LÃ¶schen" );
+    button.addActionListener( event -> textArea.setText( "" ) );
 
     JPanel top = new JPanel();
     top.setLayout( new BoxLayout( top, BoxLayout.X_AXIS ) );
@@ -72,15 +64,8 @@ public class TerminalPanel extends JPanel implements DataEventListener
     final JComboBox<Object> type = new JComboBox<Object>( DEBUG_COMBO );
     top.add( type );
     JButton debugButton = new JButton( "Debug" );
-    debugButton.addActionListener( new ActionListener()
-    {
-      @Override
-      public void actionPerformed(ActionEvent actionEvent)
-      {
-        TerminalPanel.this.aviLightConfigData.modification( new ModifiableImpl(
-            DEBUG_COMMAND[type.getSelectedIndex()] ) );
-      }
-    } );
+    debugButton.addActionListener( actionEvent -> TerminalPanel.this.aviLightConfigData
+        .modification( new ModifiableImpl( DEBUG_COMMAND[type.getSelectedIndex()] ) ) );
 
     top.add( debugButton );
 
@@ -92,13 +77,13 @@ public class TerminalPanel extends JPanel implements DataEventListener
     textArea.addKeyListener( new KeyAdapter()
     {
       @Override
-      public void keyTyped(KeyEvent e)
+      public void keyTyped( KeyEvent e )
       {
         e.consume();
       }
 
       @Override
-      public void keyPressed(KeyEvent e)
+      public void keyPressed( KeyEvent e )
       {
         TerminalPanel.this.aviLightConfigData.modification( new ModifiableImpl(
             Command.DUMP_CHANNELS ) );
@@ -108,7 +93,7 @@ public class TerminalPanel extends JPanel implements DataEventListener
       }
 
       @Override
-      public void keyReleased(KeyEvent e)
+      public void keyReleased( KeyEvent e )
       {
         e.consume();
       }
@@ -117,11 +102,11 @@ public class TerminalPanel extends JPanel implements DataEventListener
   }
 
   @Override
-  public void dataEvent(DataEvent dataEvent)
+  public void dataEvent( DataEvent dataEvent )
   {
-    if (Type.TerminalEvent.equals( dataEvent.getType() ))
+    if ( Type.TerminalEvent.equals( dataEvent.getType() ) )
     {
-      textArea.append( ((TerminalDataEvent) dataEvent).getText() );
+      textArea.append( ( (TerminalDataEvent) dataEvent ).getText() );
       textArea.append( "\r\n" );
     }
   }

@@ -7,7 +7,7 @@ public class WriteEeprom implements ProtocolHandler
 {
 
   @Override
-  public CommEvent processData(byte[] data, int size)
+  public CommEvent processData( byte[] data, int size )
   {
     return new CommEventWriteEeprom( data[0] );
   }

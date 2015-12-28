@@ -6,18 +6,18 @@ public class HexUtils
 {
   /**
    * Parses the hex char.
-   * 
+   *
    * @param ch
    *          the character to parse
    * @return the byte value
    * @throws IOException
    *           Signals that an I/O exception has occurred.
    */
-  public static byte parseHexChar(char ch)
+  public static byte parseHexChar( char ch )
   {
     if (ch >= '0' && ch <= '9')
     {
-      return (byte) (ch - '0');
+      return (byte) ( ch - '0' );
     }
     else if (ch >= 'A' && ch <= 'F')
     {
@@ -30,18 +30,18 @@ public class HexUtils
 
     throw new NumberFormatException( "illegal Hex char: " + ch );
   }
-  
-  public static String toHex16(int w)
+
+  public static String toHex16( int w )
   {
-    return toHex( (byte) (0xff & (w >> 8)) ) + toHex( (byte) (0xff & w) );
+    return toHex( (byte) ( 0xff & ( w >> 8 ) ) ) + toHex( (byte) ( 0xff & w ) );
   }
 
-  public static String toHex(byte b)
+  public static String toHex( byte b )
   {
     String s;
     int iByte = b & 0xff;
 
-    if (iByte < 16)
+    if ( iByte < 16 )
     {
       s = "0" + Integer.toHexString( iByte );
     }
@@ -53,28 +53,28 @@ public class HexUtils
     return s.toUpperCase();
   }
 
-  public static String toHex(byte[] data)
+  public static String toHex( byte[] data )
   {
     return toHex( data, data.length );
   }
 
-  public static String toHex(byte[] data, int size)
+  public static String toHex( byte[] data, int size )
   {
     return toHex( data, 0, size );
   }
 
-  public static String toHex(byte[] data, int start, int size)
+  public static String toHex( byte[] data, int start, int size )
   {
     StringBuffer sb = new StringBuffer();
     int count = 0;
-    for (int i = 0; i < size; i++)
+    for ( int i = 0; i < size; i++ )
     {
       byte b = data[start + i];
-      if (++count > size)
+      if ( ++count > size )
       {
         break;
       }
-      if (sb.length() > 0)
+      if ( sb.length() > 0 )
       {
         sb.append( ' ' );
       }

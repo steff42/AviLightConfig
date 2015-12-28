@@ -9,29 +9,29 @@ import de.prim.comm.utils.CommUtils;
 public class TelegramSeparationProcessor implements DataProcessor
 {
   /** The last received byte was Escape, check if double. */
-  protected boolean lastEscape;
+  protected boolean     lastEscape;
 
   /** The stx has already been received. */
-  protected boolean stxReceived;
+  protected boolean     stxReceived;
 
   /** The received data. */
-  protected byte[] receivedData;
+  protected byte[]      receivedData;
 
   /** The received data ptr. */
-  protected int receivedDataPtr;
+  protected int         receivedDataPtr;
 
   /** The next processor. */
   private DataProcessor next;
 
   /**
    * Instantiates a new telegram separation processor.
-   * 
+   *
    * @param next
    *          the next
    * @param bufferSize
    *          the buffer size
    */
-  public TelegramSeparationProcessor(DataProcessor next, int bufferSize)
+  public TelegramSeparationProcessor( DataProcessor next, int bufferSize )
   {
     super();
     this.next = next;
@@ -40,14 +40,14 @@ public class TelegramSeparationProcessor implements DataProcessor
 
   /* (non-Javadoc) */
   @Override
-  public void processData(byte[] buffer, int count)
+  public void processData( byte[] buffer, int count )
   {
-    //System.out.println( "received: " + HexUtils.toHex( buffer, count ));
-    
+    // System.out.println( "received: " + HexUtils.toHex( buffer, count ));
+
     int pos = 0;
-    while (pos < count)
+    while ( pos < count )
     {
-      if (!lastEscape && !stxReceived)
+      if ( !lastEscape && !stxReceived )
       {
         int startPos = pos;
         while (pos < count && buffer[pos] != CommUtils.STX)
@@ -55,10 +55,10 @@ public class TelegramSeparationProcessor implements DataProcessor
           pos++;
         }
 
-        if (pos > startPos)
+        if ( pos > startPos )
         {
-          System.out.println( "Bytes skipped: "
-              + HexUtils.toHex( buffer, startPos, pos - startPos ) );
+          System.out
+              .println( "Bytes skipped: " + HexUtils.toHex( buffer, startPos, pos - startPos ) );
         }
         if (pos < count && buffer[pos] == CommUtils.STX)
         {
@@ -75,19 +75,19 @@ public class TelegramSeparationProcessor implements DataProcessor
 
       while (pos < count && buffer[pos] != CommUtils.ETX)
       {
-        if (receivedDataPtr >= receivedData.length)
+        if ( receivedDataPtr >= receivedData.length )
         {
           // Overflow
           // bufferOverflow();
 
-          System.out.println("Overflow!!");
+          System.out.println( "Overflow!!" );
           receivedDataPtr = 0;
           lastEscape = false;
           stxReceived = false;
           return;
         }
 
-        if (buffer[pos] == CommUtils.ESCAPE)
+        if ( buffer[pos] == CommUtils.ESCAPE )
         {
           if (pos + 1 < count)
           {

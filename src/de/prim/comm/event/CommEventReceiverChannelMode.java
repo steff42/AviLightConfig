@@ -6,12 +6,12 @@ public class CommEventReceiverChannelMode extends CommEvent
 {
   private byte receiverMode[];
 
-  public CommEventReceiverChannelMode(byte buffer[])
+  public CommEventReceiverChannelMode( byte buffer[] )
   {
     super( buffer[0] );
 
     receiverMode = new byte[buffer[1]];
-    for (int i = 0; i < buffer[1]; i++)
+    for ( int i = 0; i < buffer[1]; i++ )
     {
       receiverMode[i] = buffer[2 + i];
     }
@@ -25,8 +25,7 @@ public class CommEventReceiverChannelMode extends CommEvent
   @Override
   public String toString()
   {
-    return "CommEventReceiverChannelMode [receiverMode="
-        + HexUtils.toHex( receiverMode ) + "]";
+    return "CommEventReceiverChannelMode [receiverMode=" + HexUtils.toHex( receiverMode ) + "]";
   }
 
 }

@@ -15,20 +15,20 @@ public class OutputsPanel extends AviLightSuperTab
 {
 
   /** The Constant serialVersionUID. */
-  private static final long serialVersionUID = -3802162139402721971L;
+  private static final long    serialVersionUID = -3802162139402721971L;
 
-  protected int numberOfOutputs;
+  protected int                numberOfOutputs;
 
-  protected boolean initialized;
+  protected boolean            initialized;
 
-  protected JPanel panel;
+  protected JPanel             panel;
 
-  protected OutputsModel outputsModel;
+  protected OutputsModel       outputsModel;
 
   protected OutputCellRenderer outputCellRenderer;
 
-  public OutputsPanel(MainWindow mainWindow,
-      AviLightConfigData aviLightConfigData, OutputType outputType)
+  public OutputsPanel( MainWindow mainWindow, AviLightConfigData aviLightConfigData,
+      OutputType outputType )
   {
     super( aviLightConfigData, new GridLayout( 1, 0, 10, 10 ) );
     this.numberOfOutputs = 0;

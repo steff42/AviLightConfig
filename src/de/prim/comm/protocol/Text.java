@@ -7,7 +7,7 @@ public class Text implements ProtocolHandler
 {
 
   @Override
-  public CommEvent processData(byte[] data, int size)
+  public CommEvent processData( byte[] data, int size )
   {
     return CommEventUtil.createTextEvent( data, size );
   }

@@ -7,21 +7,21 @@ import de.prim.avilight.utils.HexUtils;
  */
 public class CommEventMemory extends CommEvent
 {
-  private int address;
+  private int  address;
 
   private byte memory[];
 
   /**
    * Instantiates a new comm event memory.
-   * 
+   *
    * @param data
    *          the data
    */
-  public CommEventMemory(byte[] data)
+  public CommEventMemory( byte[] data )
   {
     super( data[0] );
 
-    address = (0xff & data[1]) + ((0xff & data[2]) << 8);
+    address = ( 0xff & data[1] ) + ( ( 0xff & data[2] ) << 8 );
 
     memory = new byte[128];
     System.arraycopy( data, 3, memory, 0, memory.length );
@@ -29,7 +29,7 @@ public class CommEventMemory extends CommEvent
 
   /**
    * Gets the address.
-   * 
+   *
    * @return the address
    */
   public int getAddress()
@@ -39,7 +39,7 @@ public class CommEventMemory extends CommEvent
 
   /**
    * Gets the memory.
-   * 
+   *
    * @return the memory
    */
   public byte[] getMemory()
@@ -50,8 +50,7 @@ public class CommEventMemory extends CommEvent
   @Override
   public String toString()
   {
-    return "Memory " + HexUtils.toHex16( address ) + ": "
-        + HexUtils.toHex( memory );
+    return "Memory " + HexUtils.toHex16( address ) + ": " + HexUtils.toHex( memory );
   }
 
 }

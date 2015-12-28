@@ -11,24 +11,24 @@ public class HexReader
 {
 
   /** The address offset. */
-  private int offset;
+  private int              offset;
 
   /** The line number reader. */
   private LineNumberReader lineNumberReader;
 
   /** The current hex line. */
-  private HexLineIterator hexLineIterator;
+  private HexLineIterator  hexLineIterator;
 
   /** The memory. */
-  private Memory memory;
+  private Memory           memory;
 
   /**
    * Instantiates a new hex reader.
-   * 
+   *
    * @param memory
    *          the memory
    */
-  public HexReader(Memory memory)
+  public HexReader( Memory memory )
   {
     super();
 
@@ -37,7 +37,7 @@ public class HexReader
 
   /**
    * Read hex.
-   * 
+   *
    * @param in
    *          the in
    * @param memory
@@ -45,28 +45,27 @@ public class HexReader
    * @throws IOException
    *           Signals that an I/O exception has occurred.
    */
-  public void readHex(Reader in) throws IOException
+  public void readHex( Reader in ) throws IOException
   {
     offset = 0;
 
     lineNumberReader = new LineNumberReader( in );
 
     String line;
-    while ((line = lineNumberReader.readLine()) != null)
+    while ( ( line = lineNumberReader.readLine() ) != null )
     {
       if (line.length() > 0 && line.charAt( 0 ) == ':')
       {
-        if (((line.length() - 1) & 1) == 0)
+        if ( ( ( line.length() - 1 ) & 1 ) == 0 )
         {
-          if (readLine( line ))
+          if ( readLine( line ) )
           {
             break;
           }
         }
         else
         {
-          throw new IOException( "Line [" + lineNumberReader.getLineNumber()
-              + "] length mismatch" );
+          throw new IOException( "Line [" + lineNumberReader.getLineNumber() + "] length mismatch" );
         }
       }
       else
@@ -79,63 +78,62 @@ public class HexReader
 
   /**
    * checks, if next byte is available.
-   * 
+   *
    * @throws IOException
    *           Signals that an I/O exception has occurred.
    */
   private void nextByteAvailable() throws IOException
   {
-    if (!hexLineIterator.hasNext())
+    if ( !hexLineIterator.hasNext() )
     {
-      throw new IOException( "Line to short: "
-          + lineNumberReader.getLineNumber() );
+      throw new IOException( "Line to short: " + lineNumberReader.getLineNumber() );
     }
   }
 
   /**
    * Reads a single line.
-   * 
+   *
    * @param line
    *          the line
    * @return true, if end of line record processed
    * @throws IOException
    *           Signals that an I/O exception has occurred.
    */
-  private boolean readLine(String line) throws IOException
+  private boolean readLine( String line ) throws IOException
   {
     hexLineIterator = new HexLineIterator( line, 1 );
     nextByteAvailable();
     byte reclen = hexLineIterator.next();
 
     nextByteAvailable();
-    int addr = 0xff00 & (hexLineIterator.next() << 8);
+    int addr = 0xff00 & ( hexLineIterator.next() << 8 );
     nextByteAvailable();
     addr |= 0x00ff & hexLineIterator.next();
 
     nextByteAvailable();
     byte rectype = hexLineIterator.next();
 
-    switch (rectype)
+    switch ( rectype )
     {
-    case 0:
-      dataRecord( reclen, addr );
-      return false;
-    case 1:
-      endOfLineRecord();
-      return true;
-    case 2:
-      extendedSegment();
-      return false;
+      case 0:
+        dataRecord( reclen, addr );
+        return false;
+      case 1:
+        endOfLineRecord();
+        return true;
+      case 2:
+        extendedSegment();
+        return false;
 
-    default:
-      throw new IOException( "unsupported rec type: " + rectype + " in line "
-          + lineNumberReader.getLineNumber() );
+      default:
+        throw new IOException( "unsupported rec type: " + rectype + " in line "
+            + lineNumberReader.getLineNumber() );
     }
   }
 
   private void extendedSegment() throws IOException
   {
-    int segment = 0xff00 & (hexLineIterator.next() << 8);
+    int segment = 0xff00 & ( hexLineIterator.next() << 8 );
     nextByteAvailable();
     segment |= 0x00ff & hexLineIterator.next();
 
@@ -146,7 +144,7 @@ public class HexReader
 
   /**
    * End of line record.
-   * 
+   *
    * @throws IOException
    *           Signals that an I/O exception has occurred.
    */
@@ -157,7 +155,7 @@ public class HexReader
 
   /**
    * Processes the data record.
-   * 
+   *
    * @param reclen
    *          the reclen
    * @param addr
@@ -165,51 +163,49 @@ public class HexReader
    * @throws IOException
    *           Signals that an I/O exception has occurred.
    */
-  private void dataRecord(byte reclen, int addr) throws IOException
+  private void dataRecord( byte reclen, int addr ) throws IOException
   {
     byte data[] = new byte[reclen];
-    for (int i = 0; i < reclen; i++)
+    for ( int i = 0; i < reclen; i++ )
     {
       nextByteAvailable();
 
       data[i] = hexLineIterator.next();
     }
 
-      for (int i = 0; i < reclen; i++)
-      {
-        memory.set( addr + offset + i,  data[i] ) ;
-      }
+    for ( int i = 0; i < reclen; i++ )
+    {
+      memory.set( addr + offset + i, data[i] );
+    }
 
     testChecksum();
   }
 
   /**
    * Test checksum.
-   * 
+   *
    * @throws IOException
    *           Signals that an I/O exception has occurred.
    */
   private void testChecksum() throws IOException
   {
-    byte checksum = (byte) (0xff & -hexLineIterator.getSum());
+    byte checksum = (byte) ( 0xff & -hexLineIterator.getSum() );
 
     nextByteAvailable();
-    if (checksum != hexLineIterator.next())
+    if ( checksum != hexLineIterator.next() )
     {
-      throw new IOException( "Checksum error: "
-          + lineNumberReader.getLineNumber() );
+      throw new IOException( "Checksum error: " + lineNumberReader.getLineNumber() );
     }
 
-    if (hexLineIterator.hasNext())
+    if ( hexLineIterator.hasNext() )
     {
-      throw new IOException( "Line to long: "
-          + lineNumberReader.getLineNumber() );
+      throw new IOException( "Line to long: " + lineNumberReader.getLineNumber() );
     }
   }
 
   /**
    * Gets the actual offset.
-   * 
+   *
    * @return the actual offset
    */
   public int getActualOffset()

@@ -18,14 +18,14 @@ public class CommEventReceiver extends CommEvent
     private boolean valid;
 
     /** The channel value: 0 .. 255. */
-    private int value;
+    private int     value;
 
     /** The segment value: 0 .. 4. */
-    private int segment;
+    private int     segment;
 
     /**
      * Instantiates a new receiver channel.
-     * 
+     *
      * @param valid
      *          the valid
      * @param value
@@ -33,7 +33,7 @@ public class CommEventReceiver extends CommEvent
      * @param segment
      *          the segment
      */
-    public ReceiverChannel(boolean valid, byte value, byte segment)
+    public ReceiverChannel( boolean valid, byte value, byte segment )
     {
       super();
       this.valid = valid;
@@ -43,7 +43,7 @@ public class CommEventReceiver extends CommEvent
 
     /**
      * Checks if is valid.
-     * 
+     *
      * @return true, if is valid
      */
     public boolean isValid()
@@ -53,7 +53,7 @@ public class CommEventReceiver extends CommEvent
 
     /**
      * Gets the value.
-     * 
+     *
      * @return the value
      */
     public int getValue()
@@ -63,7 +63,7 @@ public class CommEventReceiver extends CommEvent
 
     /**
      * Gets the segment.
-     * 
+     *
      * @return the segment
      */
     public int getSegment()
@@ -74,8 +74,7 @@ public class CommEventReceiver extends CommEvent
     @Override
     public String toString()
     {
-      return "ReceiverChannel [valid=" + valid + ", value=" + value
-          + ", segment=" + segment + "]";
+      return "ReceiverChannel [valid=" + valid + ", value=" + value + ", segment=" + segment + "]";
     }
 
   };
@@ -85,11 +84,11 @@ public class CommEventReceiver extends CommEvent
 
   /**
    * Instantiates a new receiver event.
-   * 
+   *
    * @param data
    *          the data
    */
-  public CommEventReceiver(byte data[])
+  public CommEventReceiver( byte data[] )
   {
     super( data[0] );
 
@@ -97,10 +96,10 @@ public class CommEventReceiver extends CommEvent
     if (channels > 0 && channels <= 4)
     {
       channelData = new ReceiverChannel[channels];
-      for (int i = 0; i < channels; i++)
+      for ( int i = 0; i < channels; i++ )
       {
-        byte segment = data[2 + 2 * i];
-        byte value = data[3 + 2 * i];
+        byte segment = data[2 + ( 2 * i )];
+        byte value = data[3 + ( 2 * i )];
 
         if (segment < 0 || segment > 4)
         {

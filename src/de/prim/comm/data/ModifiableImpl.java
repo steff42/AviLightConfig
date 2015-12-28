@@ -1,6 +1,6 @@
 package de.prim.comm.data;
 
-import de.prim.comm.Command.Command;
+import de.prim.comm.command.Command;
 
 /**
  * The Class ModifiableImpl.
@@ -13,11 +13,11 @@ public class ModifiableImpl implements Modifiable
 
   /**
    * Instantiates a new modifiable impl.
-   * 
+   *
    * @param command
    *          the command
    */
-  public ModifiableImpl(Command command)
+  public ModifiableImpl( Command command )
   {
     super();
     this.command = command;

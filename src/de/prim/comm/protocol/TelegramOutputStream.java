@@ -7,24 +7,24 @@ public class TelegramOutputStream implements TelegramSender
 {
   private OutputStream outputStream;
 
-  public TelegramOutputStream(OutputStream outputStream)
+  public TelegramOutputStream( OutputStream outputStream )
   {
     super();
     this.outputStream = outputStream;
   }
 
   @Override
-  public void sendByte(byte b) throws IOException
+  public void sendByte( byte b ) throws IOException
   {
-    //System.out.print( HexUtils.toHex( b ) + " " );
-    
+    // System.out.print( HexUtils.toHex( b ) + " " );
+
     outputStream.write( b & 0xff );
     outputStream.flush();
     try
     {
       Thread.sleep( 25 );
     }
-    catch (InterruptedException e)
+    catch ( InterruptedException e )
     {
     }
   }

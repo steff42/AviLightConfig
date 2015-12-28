@@ -2,12 +2,12 @@ package de.prim.comm.event;
 
 public class CommEventText extends CommEvent
 {
-  
+
   private String text;
 
-  public CommEventText(byte source, String text)
+  public CommEventText( byte source, String text )
   {
-    super(source);
+    super( source );
     this.text = text;
   }
 
@@ -21,6 +21,5 @@ public class CommEventText extends CommEvent
   {
     return "CommEventText [source=" + getSource() + ", text=" + text + "]";
   }
-  
-  
+
 }

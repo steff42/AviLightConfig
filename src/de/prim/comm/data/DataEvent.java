@@ -9,32 +9,32 @@ public class DataEvent
   {
     /** Info data changed. */
     InfoDataReceived,
-    
+
     /** Program has been received. */
-    ProgramDataReceived, 
-    
+    ProgramDataReceived,
+
     /** Receiver channel data has been received */
     ReceiverDataReceived,
-    
+
     /** Terminal Text event */
     TerminalEvent,
-    
+
     /** the voltage has been received */
     VoltageReceived,
-    
+
     LearnStickModeReceived
-    
+
   };
 
-  private Type type;
+  private Type                        type;
 
   private static Map<Type, DataEvent> events = new HashMap<DataEvent.Type, DataEvent>();
 
-  public static synchronized DataEvent getDataEvent(Type type)
+  public static synchronized DataEvent getDataEvent( Type type )
   {
     DataEvent dataEvent = events.get( type );
 
-    if (dataEvent == null)
+    if ( dataEvent == null )
     {
       dataEvent = new DataEvent( type );
       events.put( type, dataEvent );
@@ -45,11 +45,11 @@ public class DataEvent
 
   /**
    * Instantiates a new data event.
-   * 
+   *
    * @param type
    *          the type
    */
-  protected DataEvent(Type type)
+  protected DataEvent( Type type )
   {
     super();
     this.type = type;
@@ -57,7 +57,7 @@ public class DataEvent
 
   /**
    * Gets the type.
-   * 
+   *
    * @return the type
    */
   public Type getType()

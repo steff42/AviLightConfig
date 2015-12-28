@@ -1,4 +1,4 @@
-package de.prim.comm.Command;
+package de.prim.comm.command;
 
 import java.io.IOException;
 
@@ -14,26 +14,26 @@ public class MultiByteCommand extends Command
 
   /**
    * Instantiates a new multi byte command.
-   * 
+   *
    * @param cmd
    *          the cmd
    * @param data
    *          the data
    */
-  public MultiByteCommand(byte cmd, byte[] data)
+  public MultiByteCommand( byte cmd, byte[] data )
   {
     this( cmd );
     this.data = data;
   }
 
-  protected MultiByteCommand(byte cmd)
+  protected MultiByteCommand( byte cmd )
   {
     super( cmd );
   }
 
   /**
    * Gets the data.
-   * 
+   *
    * @return the data
    */
   public byte[] getData()
@@ -43,18 +43,18 @@ public class MultiByteCommand extends Command
 
   /**
    * Send.
-   * 
+   *
    * @param byteProcessor
    *          the byte processor
    * @throws IOException
    *           Signals that an I/O exception has occurred.
    */
-  public void send(TelegramEscapeByteProcessor byteProcessor)
-      throws IOException
+  @Override
+  public void send( TelegramEscapeByteProcessor byteProcessor ) throws IOException
   {
     byteProcessor.processByte( TelegramSeparator.STX );
     byteProcessor.processByte( getCmd() );
-    for (byte b : data)
+    for ( byte b : data )
     {
       byteProcessor.processByte( b );
     }

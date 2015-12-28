@@ -8,24 +8,24 @@ public class ReceiverInputRenderer extends DefaultTableCellRenderer
 {
 
   /** The Constant serialVersionUID. */
-  private static final long serialVersionUID = -5257470685789097419L;
+  private static final long   serialVersionUID = -5257470685789097419L;
 
   private ReceiverInputsModel receiverInputsModel;
 
   /**
    * Instantiates a new receiver input renderer.
-   * 
+   *
    * @param receiverInputsModel
    *          the receiver inputs model
    */
-  public ReceiverInputRenderer(ReceiverInputsModel receiverInputsModel)
+  public ReceiverInputRenderer( ReceiverInputsModel receiverInputsModel )
   {
     super();
     this.receiverInputsModel = receiverInputsModel;
   }
 
   @Override
-  protected void setValue(Object value)
+  protected void setValue( Object value )
   {
     if (value != null && value instanceof Integer)
     {

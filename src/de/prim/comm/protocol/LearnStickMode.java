@@ -8,9 +8,9 @@ public class LearnStickMode implements ProtocolHandler
 {
 
   @Override
-  public CommEvent processData(byte[] data, int size)
+  public CommEvent processData( byte[] data, int size )
   {
-    if (size == 2 )
+    if ( size == 2 )
     {
       return new CommEventLearnStickMode( data );
     }

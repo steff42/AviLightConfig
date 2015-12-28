@@ -3,76 +3,148 @@ package de.prim.avilight.gui.outputs;
 import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import de.prim.avilight.gui.dlg.AviLightDialog;
-import de.prim.avilight.gui.dlg.DoubleDocument;
+import de.prim.avilight.gui.dlg.BigDecimalDocument;
 import de.prim.avilight.gui.dlg.FlashingModeComboBoxModel;
+import de.prim.avilight.gui.dlg.lightmode.LightMode;
 import de.prim.comm.data.AviLightConfigData;
 import de.prim.comm.event.ProgramDefinition;
 
-public class OutputConfigDialog extends AviLightDialog implements
-    DocumentListener
+/**
+ * The Class OutputConfigDialog.
+ */
+public class OutputConfigDialog extends AviLightDialog implements DocumentListener
 {
 
   /** The Constant serialVersionUID. */
-  private static final long serialVersionUID = 5355108811917000166L;
+  private static final long    serialVersionUID = 5355108811917000166L;
 
-  private static final String[] FLASH_COUNT = { "1", "2", "3", "4" };
+  /** The mode. */
+  private JComboBox<LightMode> mode;
 
-  private JComboBox<Object> mode;
+  /** The flashes. */
+  private JSlider              flashes;
 
-  private JComboBox<Object> flashes;
+  /** The flash duration. */
+  private BigDecimalDocument   flashDuration;
 
-  private DoubleDocument flashDuration;
+  /** The off duration. */
+  private BigDecimalDocument   offDuration;
 
-  private DoubleDocument offDuration;
+  /** The avi light config data. */
+  private AviLightConfigData   aviLightConfigData;
 
-  private AviLightConfigData aviLightConfigData;
-  
-  private ProgramDefinition programDefinition;
+  /** The program definition. */
+  private ProgramDefinition    programDefinition;
 
   /**
    * Instantiates a new output config dialog.
-   * 
+   *
    * @param parent
    *          the parent
+   * @param aviLightConfigData
+   *          the avi light config data
    * @param data
+   *          the data
    */
-  public OutputConfigDialog(Frame parent,AviLightConfigData aviLightConfigData, ProgramDefinition data)
+  public OutputConfigDialog( Frame parent, AviLightConfigData aviLightConfigData,
+      ProgramDefinition data )
   {
     super( parent, "Ausgang - Segment" );
 
-    this.aviLightConfigData= aviLightConfigData;
+    this.aviLightConfigData = aviLightConfigData;
     this.programDefinition = data;
 
-    if(data.getAlgorithm() < FlashingModeComboBoxModel.CHANNEL_MODES.length)
+    if ( data.getAlgorithm() < FlashingModeComboBoxModel.CHANNEL_MODES.length )
     {
       mode.setSelectedIndex( data.getAlgorithm() );
     }
-    
-    flashes.setSelectedIndex( data.getFlashes() );
-    offDuration.setValue( data.getDuration() );
-    if (data.getAlgorithm() == FlashingModeComboBoxModel.MODE_PULSE)
+    else
     {
-      flashDuration.setValue( data.getDuration() );
+      mode.setSelectedIndex( FlashingModeComboBoxModel.MODE_OFF );
+    }
+
+    updateControls();
+    validateControls();
+  }
+
+  /**
+   * Update field values.
+   */
+  private void updateControls()
+  {
+    int index = mode.getSelectedIndex();
+    LightMode lightMode = mode.getItemAt( index );
+
+    updateFlashesSpinner( lightMode );
+    updateDurationField( lightMode );
+    updateOffDurationField( lightMode );
+  }
+
+  /**
+   * Update duration fields.
+   *
+   * @param lightMode
+   *          the light mode
+   */
+  private void updateDurationField( LightMode lightMode )
+  {
+    if ( lightMode.hasDuration() )
+    {
+      flashDuration.setValue( lightMode.hasOffDuration() ? programDefinition.getFlashDuration()
+          : programDefinition.getDuration() );
+      flashDuration.getTextField().setEnabled( true );
     }
     else
     {
-      flashDuration.setValue( data.getFlashDuration() );
+      flashDuration.setValue( null );
+      flashDuration.getTextField().setEnabled( false );
     }
-
-    enableControls();
   }
 
+  private void updateOffDurationField( LightMode lightMode )
+  {
+    offDuration.setValue( lightMode.hasOffDuration() ? programDefinition.getDuration() : null );
+    offDuration.getTextField().setEnabled( lightMode.hasOffDuration() );
+  }
+
+  /**
+   * Update flashes.
+   *
+   * @param lightMode
+   *          the light mode
+   */
+  private void updateFlashesSpinner( LightMode lightMode )
+  {
+    if ( lightMode.hasNumberOfFlashes() )
+    {
+      flashes.setMinimum( lightMode.getMinNumber() );
+      flashes.setMaximum( lightMode.getMaxNumber() );
+      flashes.setPaintTicks( true );
+      flashes.setPaintLabels( true );
+      flashes.setValue( programDefinition.getNumberOfFlashes() );
+      flashes.setEnabled( true );
+    }
+    else
+    {
+      flashes.setPaintTicks( false );
+      flashes.setPaintLabels( false );
+      flashes.setValue( 0 );
+      flashes.setEnabled( false );
+    }
+  }
+
+  /** {@inheritDoc} */
   @Override
   protected void addGUIContents()
   {
@@ -83,118 +155,154 @@ public class OutputConfigDialog extends AviLightDialog implements
     inputs.setLayout( new GridLayout( 4, 2, 5, 5 ) );
 
     inputs.add( new JLabel( "Modus:" ) );
-    mode = new JComboBox<Object>( new FlashingModeComboBoxModel() );
+    mode = new JComboBox<LightMode>( new FlashingModeComboBoxModel() );
     inputs.add( mode );
-    mode.addActionListener( new ActionListener()
+    mode.addActionListener( ActionEvent ->
     {
-      @Override
-      public void actionPerformed(ActionEvent event)
-      {
-        enableControls();
-      }
+      updateControls();
+      validateControls();
     } );
 
     inputs.add( new JLabel( "Anzahl:" ) );
-    flashes = new JComboBox<Object>( FLASH_COUNT );
+    flashes = new JSlider();
+    flashes.setMajorTickSpacing( 1 );
+    flashes.setPaintTicks( true );
+    flashes.setPaintLabels( true );
+    flashes.setSnapToTicks( true );
     inputs.add( flashes );
 
     inputs.add( new JLabel( "Dauer [s]:" ) );
-    JTextField textField = new JTextField( "0", 2 );
-    flashDuration = new DoubleDocument( textField );
-    inputs.add( textField );
+    JTextField durationTextField = new JTextField( null, 2 );
+    flashDuration = new BigDecimalDocument( durationTextField );
+    inputs.add( durationTextField );
     flashDuration.getTextField().getDocument().addDocumentListener( this );
 
     inputs.add( new JLabel( "Pause [s]:" ) );
-    textField = new JTextField( "0", 2 );
-    offDuration = new DoubleDocument( textField );
-    inputs.add( textField );
+    JTextField offDurationtextField = new JTextField( null, 2 );
+    offDuration = new BigDecimalDocument( offDurationtextField );
+    inputs.add( offDurationtextField );
     offDuration.getTextField().getDocument().addDocumentListener( this );
   }
 
-  protected void enableControls()
+  /**
+   * Enable controls.
+   */
+  protected void validateControls()
   {
     int index = mode.getSelectedIndex();
-    if (index >= 0)
+    LightMode flashingMode = mode.getItemAt( index );
+
+    StringBuilder statusText = new StringBuilder();
+    String currentStatus = flashingMode.validateDuration( flashDuration.getValue() );
+    if ( currentStatus != null )
     {
-      flashes.setEnabled( FlashingModeComboBoxModel.HAS_NUMBER_OF[index] );
-      flashDuration.getTextField().setEnabled(
-          FlashingModeComboBoxModel.HAS_DURATION[index] );
-      offDuration.getTextField().setEnabled(
-          FlashingModeComboBoxModel.HAS_OFF_DURATION[index] );
+      statusText.append( currentStatus );
     }
 
-    String statusText = null;
-    if (index == FlashingModeComboBoxModel.MODE_FLASH)
+    currentStatus = flashingMode.validateOffDuration( offDuration.getValue() );
+    if ( currentStatus != null )
     {
-      if (flashDuration.getValue() < 0.01)
+      if ( statusText.length() > 0 )
       {
-        statusText = "Mindestdauer is 0.01s";
+        statusText.append( ", " );
       }
-      else if (flashDuration.getValue() > 0.5)
-      {
-        statusText = "max. Dauer ist 0,5s";
-      }
-      else if (offDuration.getValue() < 0.01)
-      {
-        statusText = "min. Pause ist 0.01s";
-      }
-      else if (offDuration.getValue() > 500.0)
-      {
-        statusText = "max. Pause ist 500s";
-      }
-    }
-    else if (index == FlashingModeComboBoxModel.MODE_PULSE)
-    {
-      if (flashDuration.getValue() < 0.01)
-      {
-        statusText = "Mindestdauer is 0.01s";
-      }
-      else if (flashDuration.getValue() > 500.0)
-      {
-        statusText = "max. Dauer ist 500s";
-      }
+      statusText.append( currentStatus );
     }
 
-    setStatus( statusText );
+    // if ( index == FlashingModeComboBoxModel.MODE_FLASH )
+    // {
+    // if ( flashDuration.getValue().doubleValue() < 0.01 )
+    // {
+    // statusText = "Mindestdauer is 0.01s";
+    // }
+    // else if ( flashDuration.getValue().doubleValue() > 0.5 )
+    // {
+    // statusText = "max. Dauer ist 0,5s";
+    // }
+    // else if ( offDuration.getValue().doubleValue() < 0.01 )
+    // {
+    // statusText = "min. Pause ist 0.01s";
+    // }
+    // else if ( offDuration.getValue().doubleValue() > 500.0 )
+    // {
+    // statusText = "max. Pause ist 500s";
+    // }
+    // }
+    // else if ( index == FlashingModeComboBoxModel.MODE_PULSE )
+    // {
+    // if ( flashDuration.getValue().doubleValue() < 0.01 )
+    // {
+    // statusText = "Mindestdauer is 0.01s";
+    // }
+    // else if ( flashDuration.getValue().doubleValue() > 500.0 )
+    // {
+    // statusText = "max. Dauer ist 500s";
+    // }
+    // }
+
+    setStatus( statusText.toString() );
   }
 
+  /** {@inheritDoc} */
   @Override
   protected void okClicked()
   {
+    int selectedIdx = mode.getSelectedIndex();
+    LightMode lightMode = mode.getItemAt( selectedIdx );
 
-    programDefinition.setAlgorithm(  mode.getSelectedIndex() );
+    programDefinition.setAlgorithm( selectedIdx );
 
-    programDefinition.setFlashes( flashes.getSelectedIndex() );
-    programDefinition.setDuration( offDuration.getValue() );
-    if (programDefinition.getAlgorithm() == FlashingModeComboBoxModel.MODE_PULSE)
+    programDefinition.setNumberOfFlashes( lightMode.hasNumberOfFlashes() ? flashes.getValue() : 1 );
+
+    if ( lightMode.hasDuration() )
     {
-      programDefinition.setDuration( flashDuration.getValue() );
+      // OffDuration does not really make sense without also having Duration.
+      if ( lightMode.hasOffDuration() )
+      {
+        programDefinition.setFlashDuration( flashDuration.getValue() );
+
+        programDefinition.setDuration( offDuration.getValue() );
+      }
+      else
+      {
+        programDefinition.setFlashDuration( BigDecimal.ZERO );
+
+        programDefinition.setDuration( flashDuration.getValue() );
+      }
     }
     else
     {
-      programDefinition.setFlashDuration( flashDuration.getValue() );
+      programDefinition.setFlashDuration( BigDecimal.ZERO );
+
+      programDefinition.setDuration( BigDecimal.ZERO );
     }
 
     aviLightConfigData.modification( programDefinition );
     super.okClicked();
   }
 
+  /** {@inheritDoc} */
   @Override
-  public void changedUpdate(DocumentEvent arg0)
+  public void changedUpdate( DocumentEvent arg0 )
   {
-    enableControls();
+    // updateFieldValues();
+    validateControls();
   }
 
+  /** {@inheritDoc} */
   @Override
-  public void insertUpdate(DocumentEvent arg0)
+  public void insertUpdate( DocumentEvent arg0 )
   {
-    enableControls();
+    // updateFieldValues();
+    validateControls();
   }
 
+  /** {@inheritDoc} */
   @Override
-  public void removeUpdate(DocumentEvent arg0)
+  public void removeUpdate( DocumentEvent arg0 )
   {
-    enableControls();
+    // updateFieldValues();
+    validateControls();
   }
 
 }

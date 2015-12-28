@@ -2,18 +2,14 @@ package de.prim.avilight.gui;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.text.ParseException;
 
 import javax.swing.JButton;
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
 import de.prim.avilight.gui.utils.SpringUtilities;
@@ -25,20 +21,18 @@ public class InfoPanel extends AviLightSuperTab implements DataEventListener
 {
 
   /** The Constant serialVersionUID. */
-  private static final long serialVersionUID = -6172275938081484281L;
+  private static final long          serialVersionUID  = -6172275938081484281L;
 
-  private JLabel firmWare;
-  private JLabel highCurrentOutputs;
-  private JLabel lowCurrentOutputs;
-  private JLabel receiverInputs;
-  private JLabel voltage;
-  private JLabel limit;
+  private JLabel                     firmWare;
+  private JLabel                     highCurrentOutputs;
+  private JLabel                     lowCurrentOutputs;
+  private JLabel                     receiverInputs;
+  private JLabel                     voltage;
+  private JLabel                     limit;
 
-  private static final DecimalFormat VOLTAGE_FORMATTER = new DecimalFormat(
-      "##0.00" );
+  private static final DecimalFormat VOLTAGE_FORMATTER = new DecimalFormat( "##0.00" );
 
-  public InfoPanel(final MainWindow mainWindow,
-      AviLightConfigData aviLightConfigData)
+  public InfoPanel( final MainWindow mainWindow, AviLightConfigData aviLightConfigData )
   {
     super( aviLightConfigData, new GridLayout( 1, 0, 10, 10 ) );
 
@@ -53,28 +47,28 @@ public class InfoPanel extends AviLightSuperTab implements DataEventListener
     firmWare = new JLabel();
     panel.add( firmWare );
     panel.add( new JLabel( "" ) );
-//    button = new JButton( "Firmware upgrade" );
-//    panel.add( button );
-//    button.addActionListener( new ActionListener()
-//    {
-//      @Override
-//      public void actionPerformed(ActionEvent actionEvent)
-//      {
-//        InfoPanel.this.aviLightConfigData.firmwareUpgrade();
-//      }
-//    } );
+    // button = new JButton( "Firmware upgrade" );
+    // panel.add( button );
+    // button.addActionListener( new ActionListener()
+    // {
+    // @Override
+    // public void actionPerformed(ActionEvent actionEvent)
+    // {
+    // InfoPanel.this.aviLightConfigData.firmwareUpgrade();
+    // }
+    // } );
 
-    panel.add( new JLabel( "PWM-Ausgänge" ) );
+    panel.add( new JLabel( "PWM-AusgÃ¤nge" ) );
     highCurrentOutputs = new JLabel();
     panel.add( highCurrentOutputs );
     panel.add( new JLabel( "" ) );
 
-    panel.add( new JLabel( "Schaltausgänge" ) );
+    panel.add( new JLabel( "SchaltausgÃ¤nge" ) );
     lowCurrentOutputs = new JLabel();
     panel.add( lowCurrentOutputs );
     panel.add( new JLabel( "" ) );
 
-    panel.add( new JLabel( "Empfängereingänge" ) );
+    panel.add( new JLabel( "EmpfÃ¤ngereingÃ¤nge" ) );
     receiverInputs = new JLabel();
     panel.add( receiverInputs );
     panel.add( new JLabel( "" ) );
@@ -93,29 +87,23 @@ public class InfoPanel extends AviLightSuperTab implements DataEventListener
     panel.add( limit );
     button = new JButton( "setzen" );
     panel.add( button );
-    button.addActionListener( new ActionListener()
+    button.addActionListener( ActionEvent ->
     {
-      @Override
-      public void actionPerformed(ActionEvent actionEvent)
+      String newValue = JOptionPane.showInputDialog( InfoPanel.this, "Neue Spannugsgrenze",
+          limit.getText() );
+
+      if ( newValue != null )
       {
-        String newValue = JOptionPane.showInputDialog( InfoPanel.this,
-            "Neue Spannugsgrenze", limit.getText() );
-
-        if (newValue != null)
+        newValue = newValue.replace( ",", "." );
+        try
         {
-          try
-          {
-            Number newLimit = VOLTAGE_FORMATTER.parse( newValue );
-
-            InfoPanel.this.aviLightConfigData.setVoltageLimit( newLimit
-                .doubleValue() );
-          }
-          catch (ParseException e)
-          {
-            JOptionPane.showConfirmDialog( InfoPanel.this, "Fehler",
-                e.getLocalizedMessage(), JOptionPane.CANCEL_OPTION,
-                JOptionPane.ERROR_MESSAGE );
-          }
+          BigDecimal newLimit = new BigDecimal( newValue );
+          InfoPanel.this.aviLightConfigData.setVoltageLimit( newLimit );
+        }
+        catch ( NumberFormatException e )
+        {
+          JOptionPane.showConfirmDialog( InfoPanel.this, "Fehler", e.getLocalizedMessage(),
+              JOptionPane.CANCEL_OPTION, JOptionPane.ERROR_MESSAGE );
         }
       }
     } );
@@ -126,25 +114,24 @@ public class InfoPanel extends AviLightSuperTab implements DataEventListener
   }
 
   @Override
-  public void dataEvent(DataEvent dataEvent)
+  public void dataEvent( DataEvent dataEvent )
   {
-    switch (dataEvent.getType())
+    switch ( dataEvent.getType() )
     {
-    case InfoDataReceived:
-      firmWare.setText( aviLightConfigData.getFirmwareVersion() );
-      highCurrentOutputs.setText( String.valueOf( aviLightConfigData
-          .getOutputChannels() ) );
-      lowCurrentOutputs.setText( String.valueOf( aviLightConfigData
-          .getSwitchChannels() ) );
-      receiverInputs.setText( String.valueOf( aviLightConfigData
-          .getReceiverChannels() ) );
-      break;
+      case InfoDataReceived:
+        firmWare.setText( aviLightConfigData.getFirmwareVersion() );
+        highCurrentOutputs.setText( String.valueOf( aviLightConfigData.getOutputChannels() ) );
+        lowCurrentOutputs.setText( String.valueOf( aviLightConfigData.getSwitchChannels() ) );
+        receiverInputs.setText( String.valueOf( aviLightConfigData.getReceiverChannels() ) );
+        break;
 
-    case VoltageReceived:
-      voltage.setText( VOLTAGE_FORMATTER.format( aviLightConfigData
-          .getVoltage() ) );
-      limit.setText( VOLTAGE_FORMATTER.format( aviLightConfigData.getLimit() ) );
-      break;
+      case VoltageReceived:
+        voltage.setText( VOLTAGE_FORMATTER.format( aviLightConfigData.getVoltage() ) );
+        limit.setText( VOLTAGE_FORMATTER.format( aviLightConfigData.getLimit() ) );
+        break;
+      default:
+        // Do nothing
+        break;
     }
   }
 

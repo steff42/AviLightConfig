@@ -20,8 +20,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import javax.swing.border.EtchedBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import de.prim.comm.CommWrapper;
 import de.prim.comm.protocol.ProtocolTester;
@@ -30,39 +28,39 @@ import de.prim.comm.protocol.ProtocolTester.Mode;
 public class ConnectPanel extends JPanel
 {
 
-  private static final long serialVersionUID = -6504931574231500744L;
+  private static final long           serialVersionUID = -6504931574231500744L;
 
-  public static final String COMMAND_CONNECT = "connect";
+  public static final String          COMMAND_CONNECT  = "connect";
 
   /** The list. */
-  private JList<String> list;
+  private JList<String>               list;
 
   /** The list model. */
-  private DefaultListModel<String> listModel;
+  private DefaultListModel<String>    listModel;
 
   /** The selected index. */
-  private int selectedIndex = -1;
+  private int                         selectedIndex    = -1;
 
   /** The port list. */
-  private List<String> portList;
+  private List<String>                portList;
 
   /** The ports. */
   private Map<String, ProtocolTester> ports;
 
   /** The selected com port. */
-  private String selectedComPort;
+  private String                      selectedComPort;
 
   /** The timer. */
-  private Timer timer;
+  private Timer                       timer;
 
   /** THe connect button */
-  private JButton connect;
+  private JButton                     connect;
 
   /** The action listenr, listening to action events like connect */
-  private ActionListener actionListener;
+  private ActionListener              actionListener;
 
   /** The selected ProtocolTester */
-  private ProtocolTester selectedProtocolTester;
+  private ProtocolTester              selectedProtocolTester;
 
   public ConnectPanel()
   {
@@ -80,7 +78,7 @@ public class ConnectPanel extends JPanel
     portList = CommWrapper.listComPorts();
     listModel.clear();
 
-    for (String portName : portList)
+    for ( String portName : portList )
     {
       listModel.addElement( portName );
       ports.put( portName, new ProtocolTester( portName ) );
@@ -93,7 +91,7 @@ public class ConnectPanel extends JPanel
   {
     if (ports != null && !ports.isEmpty())
     {
-      for (ProtocolTester protocolTester : ports.values())
+      for ( ProtocolTester protocolTester : ports.values() )
       {
         protocolTester.close();
       }
@@ -108,19 +106,11 @@ public class ConnectPanel extends JPanel
     JPanel top = new JPanel();
     top.setLayout( new BoxLayout( top, BoxLayout.X_AXIS ) );
     top.setBorder( BorderFactory.createEtchedBorder( EtchedBorder.LOWERED ) );
-    top.add( new JLabel(
-        "Bitte AviLight anstecken und gewünschten Port auswählen." ) );
+    top.add( new JLabel( "Bitte AviLight anstecken und gewÃ¼nschten Port auswÃ¤hlen." ) );
     top.add( Box.createRigidArea( new Dimension( 10, 0 ) ) );
     connect = new JButton( "Verbinden" );
     connect.setEnabled( false );
-    connect.addActionListener( new ActionListener()
-    {
-      @Override
-      public void actionPerformed(ActionEvent actionEvent)
-      {
-        connect();
-      }
-    } );
+    connect.addActionListener( ActionEvent -> connect() );
 
     top.add( connect );
 
@@ -134,26 +124,22 @@ public class ConnectPanel extends JPanel
     list.setPreferredSize( dimension );
     add( list, BorderLayout.CENTER );
 
-    list.addListSelectionListener( new ListSelectionListener()
+    list.addListSelectionListener( ListSelectionEvent ->
     {
-      @Override
-      public void valueChanged(ListSelectionEvent listSelectionEvent)
-      {
-        selectedIndex = list.getSelectedIndex();
-        //System.out.println( selectedIndex );
-        enableOkButton();
-      }
+      selectedIndex = list.getSelectedIndex();
+      // System.out.println( selectedIndex );
+      enableOkButton();
     } );
 
     list.addMouseListener( new MouseAdapter()
     {
 
       @Override
-      public void mouseClicked(MouseEvent e)
+      public void mouseClicked( MouseEvent e )
       {
         if (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2)
         {
-          if (selectedComPort != null)
+          if ( selectedComPort != null )
           {
             connect();
           }
@@ -162,24 +148,17 @@ public class ConnectPanel extends JPanel
 
     } );
 
-    timer = new Timer( 250, new ActionListener()
-    {
-      @Override
-      public void actionPerformed(ActionEvent e)
-      {
-        doTimer();
-      }
-    } );
+    timer = new Timer( 250, actionEvent -> doTimer() );
   }
 
   protected void doTimer()
   {
-    for (int i = 0; i < portList.size(); i++)
+    for ( int i = 0; i < portList.size(); i++ )
     {
       String comPort = portList.get( i );
       Mode mode = ports.get( comPort ).getMode();
 
-      if (mode != null)
+      if ( mode != null )
       {
         listModel.set( i, comPort + " - " + mode.getText() );
       }
@@ -190,15 +169,14 @@ public class ConnectPanel extends JPanel
 
   protected void enableOkButton()
   {
-    if (selectedIndex >= 0)
+    if ( selectedIndex >= 0 )
     {
       selectedComPort = portList.get( selectedIndex );
 
-      connect.setEnabled( Mode.CONNECTED.equals( ports.get( selectedComPort )
-          .getMode() ) );
+      connect.setEnabled( Mode.CONNECTED.equals( ports.get( selectedComPort ).getMode() ) );
     }
 
-    if (!connect.isEnabled())
+    if ( !connect.isEnabled() )
     {
       selectedComPort = null;
     }
@@ -213,10 +191,9 @@ public class ConnectPanel extends JPanel
     listModel.clear();
     connect.setEnabled( false );
 
-    if (actionListener != null)
+    if ( actionListener != null )
     {
-      actionListener
-          .actionPerformed( new ActionEvent( this, 0, COMMAND_CONNECT ) );
+      actionListener.actionPerformed( new ActionEvent( this, 0, COMMAND_CONNECT ) );
     }
   }
 
@@ -225,7 +202,7 @@ public class ConnectPanel extends JPanel
     return actionListener;
   }
 
-  public void setActionListener(ActionListener actionListener)
+  public void setActionListener( ActionListener actionListener )
   {
     this.actionListener = actionListener;
   }
@@ -235,5 +212,4 @@ public class ConnectPanel extends JPanel
     return selectedProtocolTester;
   }
 
-  
 }

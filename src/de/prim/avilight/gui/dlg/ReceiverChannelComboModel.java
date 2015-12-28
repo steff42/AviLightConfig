@@ -2,12 +2,13 @@ package de.prim.avilight.gui.dlg;
 
 import de.prim.avilight.gui.AviLightComboBoxModel;
 
-public class ReceiverChannelComboModel extends AviLightComboBoxModel
+public class ReceiverChannelComboModel extends AviLightComboBoxModel<String>
 {
-  public static final String[] MODES = { "Normal", "Invertiert", "Gesperrt" };
+  public static final String[] MODES =
+                                     { "Normal", "Invertiert", "Gesperrt" };
 
   @Override
-  public Object getElementAt(int index)
+  public String getElementAt( int index )
   {
     return MODES[index];
   }
@@ -17,5 +18,5 @@ public class ReceiverChannelComboModel extends AviLightComboBoxModel
   {
     return MODES.length;
   }
-  
+
 }

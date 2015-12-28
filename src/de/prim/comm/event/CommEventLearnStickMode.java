@@ -4,7 +4,7 @@ public class CommEventLearnStickMode extends CommEvent
 {
   private byte learnStickMode;
 
-  public CommEventLearnStickMode(byte[] data)
+  public CommEventLearnStickMode( byte[] data )
   {
     super( data[0] );
     this.learnStickMode = data[1];

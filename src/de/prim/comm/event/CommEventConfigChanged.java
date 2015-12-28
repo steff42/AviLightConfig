@@ -1,9 +1,9 @@
 package de.prim.comm.event;
 
-public class CommEventConfigChanged  extends CommEvent
+public class CommEventConfigChanged extends CommEvent
 {
 
-  public CommEventConfigChanged(byte source)
+  public CommEventConfigChanged( byte source )
   {
     super( source );
   }
@@ -14,5 +14,4 @@ public class CommEventConfigChanged  extends CommEvent
     return "CommEventConfigChanged []";
   }
 
-  
 }

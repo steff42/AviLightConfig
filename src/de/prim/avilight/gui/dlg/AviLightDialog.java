@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -22,10 +20,10 @@ public abstract class AviLightDialog extends JDialog
   private static final long serialVersionUID = 1864302802506330378L;
 
   /** The status label. */
-  protected JLabel status;
+  protected JLabel          status;
 
   /** The ok button. */
-  protected JButton okButton;
+  protected JButton         okButton;
 
   /**
    * Adds the gui contents.
@@ -34,13 +32,13 @@ public abstract class AviLightDialog extends JDialog
 
   /**
    * Instantiates a new avi light dialog.
-   * 
+   *
    * @param owner
    *          the owner
    * @param title
    *          the title
    */
-  public AviLightDialog(Frame owner, String title)
+  public AviLightDialog( Frame owner, String title )
   {
     super( owner, title, true );
     setDefaultCloseOperation( DISPOSE_ON_CLOSE );
@@ -68,13 +66,14 @@ public abstract class AviLightDialog extends JDialog
    */
   protected void addButtons()
   {
+
     JPanel bottom = new JPanel();
     getContentPane().add( bottom, BorderLayout.SOUTH );
     bottom.setLayout( new BorderLayout() );
 
     status = new JLabel();
-    bottom.add( status, BorderLayout.CENTER );
-    Dimension dimension = new Dimension( 200, 16 );
+    bottom.add( status, BorderLayout.NORTH );
+    Dimension dimension = new Dimension( 500, 16 );
     status.setMinimumSize( dimension );
     status.setPreferredSize( dimension );
 
@@ -85,26 +84,14 @@ public abstract class AviLightDialog extends JDialog
     okButton = new JButton( "Ok" );
     buttons.add( okButton );
     okButton.setEnabled( false );
-    okButton.addActionListener( new ActionListener()
-    {
-
-      @Override
-      public void actionPerformed(ActionEvent actionEvent)
-      {
-        okClicked();
-      }
-    } );
+    okButton.addActionListener( ActionEvent -> okClicked() );
 
     JButton cancel = new JButton( "Abbruch" );
     buttons.add( cancel );
-    cancel.addActionListener( new ActionListener()
+    cancel.addActionListener( ActionEvent ->
     {
-      @Override
-      public void actionPerformed(ActionEvent e)
-      {
-        cancelClicked();
-        dispose();
-      }
+      cancelClicked();
+      dispose();
     } );
   }
 
@@ -133,13 +120,13 @@ public abstract class AviLightDialog extends JDialog
 
   /**
    * Sets the status fiels and enables the ok button if the text is null.
-   * 
+   *
    * @param text
    *          the new status
    */
-  protected void setStatus(String text)
+  protected void setStatus( String text )
   {
     status.setText( text );
-    okButton.setEnabled( text == null );
+    okButton.setEnabled( text == null || text.isEmpty() );
   }
 }

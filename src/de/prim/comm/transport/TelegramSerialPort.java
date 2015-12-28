@@ -27,20 +27,20 @@ public class TelegramSerialPort implements SerialPortEventListener, ByteProcesso
   private TelegramSeparationProcessor telegramSeparationProcessor;
 
   /** The serial port. */
-  private SerialPort serialPort;
+  private SerialPort                  serialPort;
 
   /** The input stream. */
-  private InputStream inputStream;
+  private InputStream                 inputStream;
 
   /** The output stream. */
-  private OutputStream outputStream;
-  
+  private OutputStream                outputStream;
+
   /** The input buffer. */
-  private byte[] buffer;
+  private byte[]                      buffer;
 
   /**
    * Instantiates a new telegram serial port.
-   * 
+   *
    * @param comPort
    *          the com port
    * @param telegramSeparator
@@ -56,15 +56,14 @@ public class TelegramSerialPort implements SerialPortEventListener, ByteProcesso
    * @throws IOException
    *           Signals that an I/O exception has occurred.
    */
-  public TelegramSerialPort(String comPort, TelegramSeparationProcessor telegramSeparationProcessor)
-      throws NoSuchPortException, PortInUseException,
-      UnsupportedCommOperationException, TooManyListenersException, IOException
+  public TelegramSerialPort( String comPort, TelegramSeparationProcessor telegramSeparationProcessor )
+      throws NoSuchPortException, PortInUseException, UnsupportedCommOperationException,
+      TooManyListenersException, IOException
   {
     this.telegramSeparationProcessor = telegramSeparationProcessor;
-    serialPort = CommWrapper.openComPort( comPort, Constants.APPLICATION_NAME,
-        2000 );
+    serialPort = CommWrapper.openComPort( comPort, Constants.APPLICATION_NAME, 2000 );
 
-    serialPort.setSerialPortParams( 38400, SerialPort.DATABITS_8,
+    serialPort.setSerialPortParams( getOsDepentedBaudRate(), SerialPort.DATABITS_8,
         SerialPort.STOPBITS_1, SerialPort.PARITY_NONE );
     serialPort.setFlowControlMode( SerialPort.FLOWCONTROL_NONE );
     serialPort.disableReceiveFraming();
@@ -73,16 +72,24 @@ public class TelegramSerialPort implements SerialPortEventListener, ByteProcesso
 
     inputStream = this.serialPort.getInputStream();
     buffer = new byte[Constants.BUFFER_SIZE];
-    
-    outputStream= this.serialPort.getOutputStream();
+
+    outputStream = this.serialPort.getOutputStream();
   }
 
-  
-  public void setTelegramSeparator(TelegramSeparationProcessor telegramSeparationProcessor)
+  private int getOsDepentedBaudRate()
+  {
+    if ( "Linux".equals( System.getProperty( "os.name" ) ) )
+    {
+      return 19200;
+    }
+
+    return 38400;
+  }
+
+  public void setTelegramSeparator( TelegramSeparationProcessor telegramSeparationProcessor )
   {
     this.telegramSeparationProcessor = telegramSeparationProcessor;
   }
-
 
   /*
    * (non-Javadoc)
@@ -91,21 +98,21 @@ public class TelegramSerialPort implements SerialPortEventListener, ByteProcesso
    * javax.comm.SerialPortEventListener#serialEvent(javax.comm.SerialPortEvent)
    */
   @Override
-  public void serialEvent(SerialPortEvent serialPortEvent)
+  public void serialEvent( SerialPortEvent serialPortEvent )
   {
-    if (SerialPortEvent.DATA_AVAILABLE == serialPortEvent.getEventType())
+    if ( SerialPortEvent.DATA_AVAILABLE == serialPortEvent.getEventType() )
     {
       try
       {
-        if (inputStream.available() > 0)
+        if ( inputStream.available() > 0 )
         {
           buffer = new byte[inputStream.available()];
           int read = inputStream.read( buffer );
-          
+
           telegramSeparationProcessor.processData( buffer, read );
         }
       }
-      catch (IOException e)
+      catch ( IOException e )
       {
         e.printStackTrace();
       }
@@ -118,7 +125,7 @@ public class TelegramSerialPort implements SerialPortEventListener, ByteProcesso
 
   /**
    * Gets the output stream.
-   * 
+   *
    * @return the output stream
    * @throws IOException
    */
@@ -132,14 +139,14 @@ public class TelegramSerialPort implements SerialPortEventListener, ByteProcesso
    */
   public void close()
   {
-    if (serialPort != null)
+    if ( serialPort != null )
     {
       try
       {
         serialPort.removeEventListener();
         serialPort.close();
       }
-      catch (Exception e)
+      catch ( Exception e )
       {
         // ignore
       }
@@ -148,7 +155,7 @@ public class TelegramSerialPort implements SerialPortEventListener, ByteProcesso
 
   /**
    * Gets the name.
-   * 
+   *
    * @return the name
    */
   public String getName()
@@ -156,12 +163,10 @@ public class TelegramSerialPort implements SerialPortEventListener, ByteProcesso
     return serialPort.getName();
   }
 
-
   @Override
-  public void processByte(byte b) throws IOException
+  public void processByte( byte b ) throws IOException
   {
     outputStream.write( b );
   }
-  
-  
+
 }

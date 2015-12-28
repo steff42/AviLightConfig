@@ -8,7 +8,7 @@ public class ReadPage implements ProtocolHandler
 {
 
   @Override
-  public CommEvent processData(byte[] data, int size)
+  public CommEvent processData( byte[] data, int size )
   {
     if (size == 128 + 3)
     {

@@ -13,9 +13,9 @@ public class Ping implements ProtocolHandler
    * @see de.prim.comm.protocol.ProtocolHandler#processData(byte[])
    */
   @Override
-  public CommEvent processData(byte[] data, int size)
+  public CommEvent processData( byte[] data, int size )
   {
-    if (size != 2)
+    if ( size != 2 )
     {
       return new CommEventError( "To much data for ping: ", data, size );
     }
