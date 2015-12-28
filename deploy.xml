@@ -16,11 +16,11 @@
             <zipfileset dir="${basedir}/lib" includes="RXTXcomm.jar"/>
         </jar>
         <zip destfile="${basedir}/AviLightConfig.zip" 
-        	basedir="${basedir}/executable">
-        	<fileset dir="." includes="AviLightConfig.jar"/>
-        	<fileset dir="${basedir}/batchfiles" includes="*.cmd"/>
-        	<zipfileset dir="${basedir}/lib/32" prefix="32"/>
-        	<zipfileset dir="${basedir}/lib/64" prefix="64"/>
+          basedir="${basedir}/executable">
+          <fileset dir="." includes="AviLightConfig.jar"/>
+          <fileset dir="${basedir}/batchfiles" includes="*.cmd"/>
+          <zipfileset dir="${basedir}/lib/32" prefix="32"/>
+          <zipfileset dir="${basedir}/lib/64" prefix="64"/>
         </zip>
     </target>
 </project>
