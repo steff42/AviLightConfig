@@ -80,14 +80,14 @@ public class MainWindow extends JFrame implements ActionListener
     container.add( toolbar, BorderLayout.PAGE_START );
 
     loadData = new JButton();
-    loadData.setIcon( new ImageIcon( MainWindow.class.getResource( "/resources/load.gif" ) ) );
+    loadData.setIcon( new ImageIcon( MainWindow.class.getResource( "/images/icons/load.gif" ) ) );
     loadData.setToolTipText( "Programm verwerfen und vom Modul neu laden" );
     loadData.setEnabled( false );
     loadData.addActionListener( ActionEvent -> aviLightConfigData.reloadConfig() );
     toolbar.add( loadData );
 
     saveData = new JButton();
-    saveData.setIcon( new ImageIcon( MainWindow.class.getResource( "/resources/save.gif" ) ) );
+    saveData.setIcon( new ImageIcon( MainWindow.class.getResource( "/images/icons/save.gif" ) ) );
     saveData.setToolTipText( "Programm auf dem Modul speichern" );
     saveData.setEnabled( false );
     saveData.addActionListener( ActionEvent -> aviLightConfigData.saveConfig() );

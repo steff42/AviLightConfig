@@ -1,0 +1,96 @@
+// ===== Plugins to use =====
+apply plugin: 'eclipse'
+apply plugin: 'java'
+apply plugin: 'distribution'
+
+// ===== Project settings =====
+group = 'de.prim.avilight'
+version = '1.0'
+  
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+defaultTasks( 'distributeAviLightConfig' )
+
+
+// ===== Dependency Management =====
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile 'javax.xml.bind:jaxb-api:2.2.12'
+  compile files( 'lib/RXTXcomm.jar' )
+  
+  archives files( 'lib/RXTXcomm.jar' )
+  archives 'javax.xml.bind:jaxb-api:2.2.12'
+  
+  testCompile 'org.testng:testng:6.9.10'
+}
+
+// ===== Java Settings =====
+sourceSets {
+  main {
+    resources {
+      exclude 'batchfiles/**'
+    }
+  }
+  test {
+    resources {
+      exclude 'testng.xml'
+    }
+  }
+
+}
+
+compileJava {
+  options.encoding = 'UTF-8'
+}
+
+jar {
+  manifest {
+    attributes(
+      'Main-Class': 'de.prim.avilight.Start',
+      'Class-Path': '../lib/RXTXcomm.jar ../lib/jaxb-api-2.2.12.jar'
+    )
+  }
+}
+
+test.useTestNG()
+
+// ===== Distribution Settings =====
+distributions {
+  main {
+    baseName = 'AviLightConfig'
+    contents {
+      into('lib') {
+        from configurations.archives
+        from {'lib/RXTXcomm'}
+      }
+      
+      into('bin') {
+        from  {'build/libs'}
+      }
+      
+      from {'src/main/resources/batchfiles'}
+    }
+  }
+}
+
+// ===== Inherited Tasks Settings =====
+compileJava.dependsOn clean
+distZip.dependsOn jar
+distTar.dependsOn jar
+
+eclipseJdt << {
+  File prefsResources = file('.settings/org.eclipse.core.resources.prefs')
+  prefsResources.write('eclipse.preferences.version=1\r\n')
+  prefsResources.append('encoding/<project>=UTF-8')
+  
+  File prefsRuntime = file('.settings/org.eclipse.core.runtime.prefs')
+  prefsRuntime.write('eclipse.preferences.version=1\r\n')
+  prefsRuntime.append('line.separator=\\r\\n') }
+
+// ===== Own Task Definitions =====
+
+task distributeAvilightConfig(dependsOn: distZip)
