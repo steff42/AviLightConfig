@@ -9,7 +9,7 @@ public class SetProgram extends MultiByteCommand
   {
     super( AviLightProtocol.CMD_SET_PROGRAMM, new byte[]
     { outputChannel, segment, algorithm, (byte) ( period & 0xff ),
-        (byte) ( 0xff & ( period >> 8 ) ), flash } );
+      (byte) ( 0xff & ( period >> 8 ) ), flash } );
   }
 
 }

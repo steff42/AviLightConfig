@@ -1,10 +1,10 @@
 package de.prim.comm.protocol;
 
 import de.prim.comm.event.CommEvent;
+import de.prim.comm.event.CommEventBatteryLimit;
 import de.prim.comm.event.CommEventError;
-import de.prim.comm.event.CommEventVoltage;
 
-public class Voltage implements ProtocolHandler
+public class BatteryLimit implements ProtocolHandler
 {
 
   @Override
@@ -12,7 +12,7 @@ public class Voltage implements ProtocolHandler
   {
     if ( size == 3 )
     {
-      return new CommEventVoltage( data, size );
+      return new CommEventBatteryLimit( data, size );
     }
     else
     {

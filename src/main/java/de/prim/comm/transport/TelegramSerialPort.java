@@ -1,21 +1,20 @@
 package de.prim.comm.transport;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.TooManyListenersException;
+
+import de.prim.avilight.utils.Constants;
+import de.prim.comm.CommWrapper;
+import de.prim.comm.processor.ByteProcessor;
+import de.prim.comm.processor.TelegramSeparationProcessor;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 import gnu.io.UnsupportedCommOperationException;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.TooManyListenersException;
-
-import de.prim.avilight.Constants;
-import de.prim.comm.CommWrapper;
-import de.prim.comm.processor.ByteProcessor;
-import de.prim.comm.processor.TelegramSeparationProcessor;
 
 /**
  * The Class TelegramSerialPort.
@@ -56,14 +55,15 @@ public class TelegramSerialPort implements SerialPortEventListener, ByteProcesso
    * @throws IOException
    *           Signals that an I/O exception has occurred.
    */
-  public TelegramSerialPort( String comPort, TelegramSeparationProcessor telegramSeparationProcessor )
-      throws NoSuchPortException, PortInUseException, UnsupportedCommOperationException,
-      TooManyListenersException, IOException
+  public TelegramSerialPort( String comPort,
+      TelegramSeparationProcessor telegramSeparationProcessor )
+          throws NoSuchPortException, PortInUseException, UnsupportedCommOperationException,
+          TooManyListenersException, IOException
   {
     this.telegramSeparationProcessor = telegramSeparationProcessor;
     serialPort = CommWrapper.openComPort( comPort, Constants.APPLICATION_NAME, 2000 );
 
-    serialPort.setSerialPortParams( getOsDepentedBaudRate(), SerialPort.DATABITS_8,
+    serialPort.setSerialPortParams( getOsDependentBaudRate(), SerialPort.DATABITS_8,
         SerialPort.STOPBITS_1, SerialPort.PARITY_NONE );
     serialPort.setFlowControlMode( SerialPort.FLOWCONTROL_NONE );
     serialPort.disableReceiveFraming();
@@ -76,7 +76,7 @@ public class TelegramSerialPort implements SerialPortEventListener, ByteProcesso
     outputStream = this.serialPort.getOutputStream();
   }
 
-  private int getOsDepentedBaudRate()
+  private int getOsDependentBaudRate()
   {
     if ( "Linux".equals( System.getProperty( "os.name" ) ) )
     {
@@ -93,7 +93,7 @@ public class TelegramSerialPort implements SerialPortEventListener, ByteProcesso
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * javax.comm.SerialPortEventListener#serialEvent(javax.comm.SerialPortEvent)
    */

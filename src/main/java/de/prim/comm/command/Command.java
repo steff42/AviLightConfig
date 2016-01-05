@@ -23,28 +23,31 @@ public class Command
   /** see {@link AviLightProtocol#CMD_RECEIVER} */
   public static Command GET_RECEIVER            = new Command( AviLightProtocol.CMD_RECEIVER );
   public static Command RECEIVER_CHANNEL_MODE   = new Command(
-                                                    AviLightProtocol.CMD_GET_RECEIVER_CHANNEL_MODE );
+      AviLightProtocol.CMD_GET_RECEIVER_CHANNEL_MODE );
   /** see {@link AviLightProtocol#CMD_CHANNEL_INFO} */
   public static Command CHANNEL_INFO            = new Command( AviLightProtocol.CMD_CHANNEL_INFO );
   /** see {@link AviLightProtocol#CMD_GET_CONTROLLING_CHANNEL} */
   public static Command GET_CONTROLLING_CHANNEL = new Command(
-                                                    AviLightProtocol.CMD_GET_CONTROLLING_CHANNEL );
+      AviLightProtocol.CMD_GET_CONTROLLING_CHANNEL );
   public static Command VOLTAGE                 = new Command( AviLightProtocol.CMD_GET_VOLTAGE );
+  public static Command BATTERY_LIMIT           = new Command(
+      AviLightProtocol.CMD_GET_BATTERY_LIMIT );
   public static Command DUMP_PROGRAM_ARRAY      = new Command(
-                                                    AviLightProtocol.CMD_DUMP_PROGRAM_ARRAY );
+      AviLightProtocol.CMD_DUMP_PROGRAM_ARRAY );
   public static Command DUMP_EEPROM             = new Command( AviLightProtocol.CMD_DUMP_EEPROM );
   public static Command DUMP_RECEIVER           = new Command( AviLightProtocol.CMD_DUMP_RECEIVER );
   public static Command DUMP_CHANNELS           = new Command( AviLightProtocol.CMD_DUMP_CHANNELS );
   public static Command DUMP_GLOBALS            = new Command( AviLightProtocol.CMD_DUMP_GLOBALS );
   public static Command ENTER_PROGRAMMING_MODE  = new Command(
-                                                    AviLightProtocol.CMD_ENTER_PROGRAMMING_MODE );
+      AviLightProtocol.CMD_ENTER_PROGRAMMING_MODE );
   public static Command RESET                   = new Command( AviLightProtocol.CMD_RESET );
 
-  public static Command WRITE_TO_EEPROM         = new Command( AviLightProtocol.CMD_WRITE_TO_EEPROM );
+  public static Command WRITE_TO_EEPROM         = new Command(
+      AviLightProtocol.CMD_WRITE_TO_EEPROM );
   public static Command READ_FROM_EEPROM        = new Command(
-                                                    AviLightProtocol.CMD_READ_FROM_EEPROM );
+      AviLightProtocol.CMD_READ_FROM_EEPROM );
   public static Command CMD_GET_LEARN_STICKMODE = new Command(
-                                                    AviLightProtocol.CMD_GET_LEARN_STICKMODE );
+      AviLightProtocol.CMD_GET_LEARN_STICKMODE );
 
   /**
    * Instantiates a new command.

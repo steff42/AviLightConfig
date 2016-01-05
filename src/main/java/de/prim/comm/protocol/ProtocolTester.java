@@ -1,19 +1,18 @@
 package de.prim.comm.protocol;
 
-import gnu.io.NoSuchPortException;
-import gnu.io.PortInUseException;
-import gnu.io.UnsupportedCommOperationException;
-
 import java.io.IOException;
 import java.util.TooManyListenersException;
 
-import de.prim.avilight.Constants;
+import de.prim.avilight.utils.Constants;
 import de.prim.avilight.utils.HexUtils;
 import de.prim.comm.command.Command;
 import de.prim.comm.processor.DataProcessor;
 import de.prim.comm.processor.TelegramEscapeByteProcessor;
 import de.prim.comm.processor.TelegramSeparationProcessor;
 import de.prim.comm.transport.TelegramSerialPort;
+import gnu.io.NoSuchPortException;
+import gnu.io.PortInUseException;
+import gnu.io.UnsupportedCommOperationException;
 
 public class ProtocolTester implements Runnable, DataProcessor
 {
@@ -50,8 +49,8 @@ public class ProtocolTester implements Runnable, DataProcessor
 
     try
     {
-      telegramSerialPort = new TelegramSerialPort( comPort, new TelegramSeparationProcessor( this,
-          Constants.BUFFER_SIZE ) );
+      telegramSerialPort = new TelegramSerialPort( comPort,
+          new TelegramSeparationProcessor( this, Constants.BUFFER_SIZE ) );
 
       thread = new Thread( this );
       thread.start();
@@ -141,7 +140,7 @@ public class ProtocolTester implements Runnable, DataProcessor
         + ( telegramSerialPort == null ? "" : telegramSerialPort.getName() ) + ": "
         + HexUtils.toHex( buffer, length ) );
 
-    if (length == 2 && buffer[0] == AviLightProtocol.CMD_PING)
+    if ( length == 2 && buffer[0] == AviLightProtocol.CMD_PING )
     {
       // System.out.println( "PING Received from " +
       // telegramSerialPort.getName() );

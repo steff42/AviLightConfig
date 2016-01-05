@@ -19,18 +19,18 @@ public class AviLightProtocol implements DataProcessor
 
   // Ping the device, the answer is a ping too
   /** The Constant CMD_PING. */
-  public static final byte                  CMD_PING                      = (byte) 0;
+  public static final byte                  CMD_PING                      = 0;
 
   // Answers the firmware version as a string
   /** The Constant CMD_INFO. */
-  public static final byte                  CMD_INFO                      = (byte) 1;
+  public static final byte                  CMD_INFO                      = 1;
 
   // Print string to terminal
   /** The Constant CMD_TERMINAL. */
-  public static final byte                  CMD_TERMINAL                  = (byte) 2;
+  public static final byte                  CMD_TERMINAL                  = 2;
 
   // Send Channel Info
-  public static final byte                  CMD_CHANNEL_INFO              = (byte) 3;
+  public static final byte                  CMD_CHANNEL_INFO              = 3;
 
   // Get Receiver Channels
   public static final byte                  CMD_RECEIVER                  = 4;
@@ -42,9 +42,11 @@ public class AviLightProtocol implements DataProcessor
   public static final byte                  CMD_SET_RECEIVER_CHANNEL_MODE = 6;
 
   public static final byte                  CMD_GET_CONTROLLING_CHANNEL   = 7;
+
   public static final byte                  CMD_SET_CONTROLLING_CHANNEL   = 8;
 
   public static final byte                  CMD_GET_PROGRAMM              = 9;
+
   public static final byte                  CMD_SET_PROGRAMM              = 10;
 
   public static final byte                  CMD_GET_VOLTAGE               = 11;
@@ -62,7 +64,9 @@ public class AviLightProtocol implements DataProcessor
 
   public static final byte                  CMD_GET_LEARN_STICKMODE       = 17;
   public static final byte                  CMD_SET_LEARN_STICKMODE       = 18;
+
   public static final byte                  CMD_SET_BATTERY_LIMIT         = 19;
+  public static final byte                  CMD_GET_BATTERY_LIMIT         = 20;
 
   public static final byte                  CMD_DUMP_PROGRAM_ARRAY        = 0x7b;
   public static final byte                  CMD_DUMP_EEPROM               = 0x7c;
@@ -77,6 +81,7 @@ public class AviLightProtocol implements DataProcessor
 
   /** The HANDLER. */
   private static Map<Byte, ProtocolHandler> HANDLER                       = new HashMap<Byte, ProtocolHandler>();
+
   static
   {
     HANDLER.put( CMD_PING, new Ping() );
@@ -85,6 +90,7 @@ public class AviLightProtocol implements DataProcessor
     HANDLER.put( CMD_CHANNEL_INFO, new ChannelInfo() );
     HANDLER.put( CMD_RECEIVER, new Receiver() );
     HANDLER.put( CMD_GET_RECEIVER_CHANNEL_MODE, new ReceiverChannelMode() );
+    HANDLER.put( CMD_SET_RECEIVER_CHANNEL_MODE, HANDLER.get( CMD_GET_RECEIVER_CHANNEL_MODE ) );
     HANDLER.put( CMD_GET_CONTROLLING_CHANNEL, new ControllingChannel() );
     HANDLER.put( CMD_SET_CONTROLLING_CHANNEL, HANDLER.get( CMD_GET_CONTROLLING_CHANNEL ) );
     HANDLER.put( CMD_GET_PROGRAMM, new Program() );
@@ -98,48 +104,51 @@ public class AviLightProtocol implements DataProcessor
     HANDLER.put( CMD_READ_FROM_EEPROM, new ReadEeprom() );
     HANDLER.put( CMD_GET_LEARN_STICKMODE, new LearnStickMode() );
     HANDLER.put( CMD_SET_LEARN_STICKMODE, HANDLER.get( CMD_GET_LEARN_STICKMODE ) );
-    HANDLER.put( CMD_SET_BATTERY_LIMIT, HANDLER.get( CMD_GET_VOLTAGE ) );
+    HANDLER.put( CMD_GET_BATTERY_LIMIT, new BatteryLimit() );
+    HANDLER.put( CMD_SET_BATTERY_LIMIT, HANDLER.get( CMD_GET_BATTERY_LIMIT ) );
   }
 
   /** Enable logging of commands. */
-  public static Set<Byte>                   LOG_COMMAND;
+  public static Set<Byte> LOG_COMMAND;
+
   static
   {
     LOG_COMMAND = new HashSet<Byte>();
-    // LOG_COMMAND.add( CMD_SET_PROGRAMM );
-    // LOG_COMMAND.add( CMD_SET_CONTROLLING_CHANNEL );
-    // LOG_COMMAND.add( CMD_GET_PROGRAMM );
-    // LOG_COMMAND.add( CMD_GET_CONTROLLING_CHANNEL );
-    // LOG_COMMAND.add( CMD_GET_PROGRAMM );
+    LOG_COMMAND.add( CMD_SET_PROGRAMM );
+    LOG_COMMAND.add( CMD_GET_PROGRAMM );
     // LOG_COMMAND.add( CMD_GET_VOLTAGE );
     // LOG_COMMAND.add( CMD_RECEIVER );
-    LOG_COMMAND.add( CMD_ENTER_PROGRAMMING_MODE );
+    // LOG_COMMAND.add( CMD_ENTER_PROGRAMMING_MODE );
     // LOG_COMMAND.add( CMD_WRITE_PAGE );
     // LOG_COMMAND.add( CMD_RESET );
     // LOG_COMMAND.add( CMD_GET_RECEIVER_CHANNEL_MODE );
     // LOG_COMMAND.add( CMD_SET_RECEIVER_CHANNEL_MODE );
     // LOG_COMMAND.add( CMD_DUMP_CHANNELS );
-    LOG_COMMAND.add( CMD_CONFIG_CHANGED );
-    LOG_COMMAND.add( CMD_WRITE_TO_EEPROM );
-    LOG_COMMAND.add( CMD_READ_FROM_EEPROM );
+    // LOG_COMMAND.add( CMD_CONFIG_CHANGED );
+    // LOG_COMMAND.add( CMD_WRITE_TO_EEPROM );
+    // LOG_COMMAND.add( CMD_READ_FROM_EEPROM );
     // LOG_COMMAND.add( CMD_GET_LEARN_STICKMODE );
-    LOG_COMMAND.add( CMD_SET_LEARN_STICKMODE );
+    // LOG_COMMAND.add( CMD_SET_LEARN_STICKMODE );
+    LOG_COMMAND.add( CMD_GET_CONTROLLING_CHANNEL );
+    LOG_COMMAND.add( CMD_SET_CONTROLLING_CHANNEL );
   }
 
   /** The listener. */
   // private List<CommEventListener> listener;
 
   /** The last event, only for testing. */
-  private CommEvent                         lastEvent;
+  private CommEvent         lastEvent;
 
-  private CommEventListener                 eventListener;
+  private CommEventListener eventListener;
 
-  public static boolean                     enableDump                    = false;
+  // TODO
+  public static boolean     enableDump = false;
 
   /**
    * Instantiates a new avi light protocol.
    */
-  public AviLightProtocol( CommEventListener eventListener )
+  public AviLightProtocol(
+      CommEventListener eventListener /* , EventHandler<Event> eventHandler */ )
   {
     super();
     this.eventListener = eventListener;

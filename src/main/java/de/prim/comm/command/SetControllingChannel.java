@@ -9,7 +9,7 @@ public class SetControllingChannel extends MultiByteCommand
 {
 
   /**
-   * Instantiates a new sets the receiver channel mode.
+   * Instantiates a new SetControllingChannel command.
    *
    * @param ouputChannel
    *          the ouput channel

@@ -3,7 +3,7 @@ package de.prim.test;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import de.prim.avilight.Constants;
+import de.prim.avilight.utils.Constants;
 import de.prim.avilight.utils.HexUtils;
 import de.prim.comm.processor.DataProcessor;
 import de.prim.comm.processor.TelegramSeparationProcessor;

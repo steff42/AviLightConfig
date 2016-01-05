@@ -1,5 +1,7 @@
 package de.prim.comm.event;
 
+import de.prim.avilight.model.ProgramDefinition;
+
 public class CommEventProgram extends CommEvent
 {
   private byte              channel;
@@ -13,8 +15,8 @@ public class CommEventProgram extends CommEvent
     channel = buffer[1];
     segment = buffer[2];
 
-    programDefinition = new ProgramDefinition( channel, segment, buffer[3], ( 0xff & buffer[4] )
-        + ( ( 0xff & buffer[5] ) << 8 ), buffer[6] );
+    programDefinition = new ProgramDefinition( channel, segment, buffer[3],
+        ( 0xff & buffer[4] ) + ( ( 0xff & buffer[5] ) << 8 ), buffer[6] );
   }
 
   public byte getChannel()
